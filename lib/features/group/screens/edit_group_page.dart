@@ -19,20 +19,20 @@ import '../../Home/screens/navigation_page.dart';
 import '../controller/group_controller.dart';
 import 'add_member_page.dart';
 
-class EditCardPage extends ConsumerStatefulWidget {
+class EditGroupPage extends ConsumerStatefulWidget {
   final String groupId;
   final String groupName;
   final String image;
   final String color;
   final List<MemberModel> memberList;
-  const EditCardPage( {Key? key, required this.groupId, required this.  groupName,
+  const EditGroupPage( {Key? key, required this.groupId, required this.  groupName,
     required this. image, required this.  color, required this. memberList}) : super(key: key);
 
   @override
-  ConsumerState<EditCardPage> createState() => _AddCardPageState();
+  ConsumerState<EditGroupPage> createState() => _AddCardPageState();
 }
 
-class _AddCardPageState extends ConsumerState<EditCardPage> {
+class _AddCardPageState extends ConsumerState<EditGroupPage> {
   String? _groupImagePath;
   File? _image;
   String? _imageName;

@@ -159,7 +159,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                      builder: (context) => EditCardPage(
+                                                      builder: (context) => EditGroupPage(
                                                         groupId: group.groupId,
                                                         groupName: group.groupName,
                                                         image: group.image,
@@ -259,7 +259,7 @@ class _HomePageState extends ConsumerState<HomePage> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => AddCardPage(), // Pass the index
+                  builder: (context) => AddGroupPage(), // Pass the index
                 ),
               );
               // Navigator.push(

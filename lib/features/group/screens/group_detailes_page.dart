@@ -239,9 +239,11 @@ void initState() {
                                               context,
                                               '/UserSinglePage',
                                               arguments: {
-                                                'groupId':groupId,
-                                                'memberid': contact.memberId,
-                                                'memberModel': contact,
+                                                // 'groupId':groupId,
+                                                // 'memberid': contact.memberId,
+                                                // 'memberModel': contact,
+                                                'name':contact.memberName,
+                                                'phNumber':contact.phone
 
                                               },
                                             );

@@ -269,10 +269,25 @@ class _ContactsPageState extends State<ContactsPage> {
                               Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  CircleAvatar(
-                                    radius: 22,
-                                    backgroundColor: Colors.green.shade700,
-                                    child: Icon(Icons.group_sharp, color: Colors.white, size: width * 0.08),
+                                  InkWell(
+                                    onTap: (){
+                                      Navigator.pushNamed(
+                                        context,
+                                        '/UserSinglePage',
+                                        arguments: {
+                                          // 'groupId':groupId,
+                                          // 'memberid': contact.memberId,
+                                          'name': contact.displayName,
+                                          'phNumber':contact.phones!.first.value.toString()
+
+                                        },
+                                      );
+                                    },
+                                    child: CircleAvatar(
+                                      radius: 22,
+                                      backgroundColor: Colors.green.shade700,
+                                      child: Icon(Icons.group_sharp, color: Colors.white, size: width * 0.08),
+                                    ),
                                   ),
                                   SizedBox(width: 5),
                                   InkWell(

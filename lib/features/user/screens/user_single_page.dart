@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:qctt/core/constants/images/images.dart';
@@ -115,10 +116,63 @@ class UserSinglePage extends StatefulWidget {
   State<UserSinglePage> createState() => _UserSinglePageState();
 }
 
+
 class _UserSinglePageState extends State<UserSinglePage> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
+  Future<void> getContact() async {
+    try {
+      // Fetch document from Firestore
+      DocumentSnapshot doc = await FirebaseFirestore.instance
+          .collection('contacts')
+          .doc(phno)
+          .get();
+
+      if (doc.exists) {
+        // Document exists, extract data
+        var data = doc.data() as Map<String, dynamic>;
+
+        setState(() {
+          whatsappNo = data['whatsappNo'] ?? ''; // Default to empty string if null
+          instaId = data['instaId'] ?? '';
+          facebookId = data['facebookId'] ?? '';
+          twitterId = data['twitter'] ?? '';
+          website = data['website'] ?? '';
+          LinkdnId = data['linkdn'] ?? '';
+          emailId = data['email'] ?? '';
+        });
+
+        print("Document exists: $data");
+      } else {
+        // Document does not exist, create a new one with initial data
+        await FirebaseFirestore.instance.collection('contacts').doc(phno).set({
+          'whatsappNo': phno, // Default value as phone number
+          'instaId': instaId ?? '', // Default empty string
+          'facebookId': facebookId ?? '',
+          'twitter': twitterId ?? '',
+          'website': website ?? '',
+          'email': emailId ?? '',
+          'linkdn': LinkdnId ?? '',
+          'createdAt': DateTime.now(), // Add timestamp
+        });
+
+        print("New document created for phone number $phno");
+      }
+    } catch (e) {
+      // Handle errors gracefully
+      print("Error fetching or creating document: $e");
+    }
+  }
+
+
   TextEditingController _textController = TextEditingController();
 
-  void _showBottomSheet(BuildContext context,String label) {
+  void _showBottomSheet(BuildContext context, String label, int type, String data) {
+    _textController.text = data; // Set the existing value before showing the sheet
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true, // Allows the bottom sheet to take more space
@@ -127,31 +181,63 @@ class _UserSinglePageState extends State<UserSinglePage> {
       ),
       builder: (context) {
         return Container(
-          height: width*1, // 50% of the screen height
+          height: width,
           padding: const EdgeInsets.all(16.0),
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // Text(
-              //   'Edit Details',
-              //   style: TextStyle(
-              //     fontSize: 18,
-              //     // fontWeight: FontWeight.bold,
-              //   ),
-              // ),
               SizedBox(height: 10),
               TextFormField(
                 controller: _textController,
                 decoration: InputDecoration(
                   labelText: label,
-                  labelStyle: GoogleFonts.roboto(color: Colors.grey)
-                  // border: OutlineInputBorder(),
+                  labelStyle: GoogleFonts.roboto(color: Colors.grey),
                 ),
               ),
               SizedBox(height: 20),
               InkWell(
-                onTap: (){
-                  Navigator.pop(context);
+                onTap: () async {
+                  try {
+                    // Ensure the input is not empty
+                    final newValue = _textController.text.trim();
+                    if (newValue.isEmpty) {
+                      print("Input cannot be empty");
+                      return;
+                    }
+
+                    // Update the Firestore document
+                    await FirebaseFirestore.instance.collection('contacts').doc(phno).update({
+                      if (type == 0) 'whatsappNo': newValue,
+                      if (type == 1) 'facebookId': newValue,
+                      if (type == 2) 'email': newValue,
+                      if (type == 3) 'twitter': newValue,
+                      if (type == 4) 'linkdn': newValue,
+                      if (type == 5) 'instaId': newValue,
+                      if (type == 6) 'website': newValue,
+                    });
+
+                    if (mounted) {
+                      setState(() {
+                        // Optionally, update the local state with the new value
+                        if (type == 0) whatsappNo = newValue;
+                        if (type == 1) facebookId = newValue;
+                        if (type == 2) emailId = newValue;
+                        if (type == 3) twitterId = newValue;
+                        if (type == 4) LinkdnId = newValue;
+                        if (type == 5) instaId = newValue;
+                        if (type == 6) website = newValue;
+                      });
+                    }
+
+                    // Clear the text field
+                    _textController.text = "";
+
+                    // Close the bottom sheet
+                    Navigator.pop(context);
+                  } catch (e) {
+                    print("Error updating document: $e");
+                  }
                 },
                 child: Container(
                   height: 40,
@@ -159,17 +245,13 @@ class _UserSinglePageState extends State<UserSinglePage> {
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5),
                     color: Colors.blue,
-
                   ),
-                  // onPressed: () {
-                  //   // Handle the submission of the new value
-                  //   // String newValue = _textController.text;
-                  //   // print('New Value: $newValue'); // Replace this with your logic
-                  //   Navigator.pop(context); // Close the bottom sheet
-                  // },
-                  child: Center(child: Text('Submit',style: GoogleFonts.roboto(
-                    color: Colors.white
-                  ),)),
+                  child: Center(
+                    child: Text(
+                      'Submit',
+                      style: GoogleFonts.roboto(color: Colors.white),
+                    ),
+                  ),
                 ),
               ),
             ],
@@ -182,17 +264,29 @@ class _UserSinglePageState extends State<UserSinglePage> {
 
 
   String memberId = '';
+  String whatsappNo = '';
+  String instaId = '';
+  String facebookId = '';
+  String LinkdnId = '';
+  String website = '';
+  String twitterId = '';
+  String emailId = '';
+  String phno = '';
   String groupId = '';
-  MemberModel? member;
+  // MemberModel? member;
+  String member='';
 
   @override
   void didChangeDependencies() {
     final arguments =
     ModalRoute.of(context)?.settings.arguments as Map<String, dynamic>;
-    groupId = arguments['groupId'].toString();
-    memberId = arguments['memberId'].toString();
-    member = arguments['memberModel'];
+    // groupId = arguments['groupId'].toString();
+    // memberId = arguments['memberId'].toString();
+     member = arguments['name'];
+    phno = arguments['phNumber'];
     super.didChangeDependencies();
+    getContact();
+
   }
 
   @override
@@ -213,7 +307,7 @@ class _UserSinglePageState extends State<UserSinglePage> {
           },
         ),
         title: Text(
-          member?.memberName ?? 'Loading...',
+          member.toString() ?? 'Loading...',
           style: GoogleFonts.roboto(
             fontWeight: FontWeight.bold,
 
@@ -232,14 +326,14 @@ class _UserSinglePageState extends State<UserSinglePage> {
               ),
               leading: Image.asset(ImageConstants.whatsapp,color: Colors.grey,height: 20,width: 20,),
               title: Text(
-                '090909090',
+                whatsappNo==""?'--':whatsappNo,
                 style: GoogleFonts.roboto(),
               ),
               subtitle: Text('WhatsApp',style: GoogleFonts.roboto(color: Colors.grey),),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {
-                  _showBottomSheet(context,'WhatsApp Number');
+                  _showBottomSheet(context,'WhatsApp Number',0,whatsappNo);
                   // Handle edit action
                 },
               ),
@@ -251,14 +345,14 @@ class _UserSinglePageState extends State<UserSinglePage> {
               ),
               leading: Icon(Icons.facebook,color: Colors.grey),
               title: Text(
-                'facebook.com/johndoe',
+                facebookId==""?'--':facebookId,
                 style: GoogleFonts.roboto(),
               ),
               subtitle: Text('Facebook',style: GoogleFonts.roboto(color: Colors.grey),),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {
-                  _showBottomSheet(context,'Facebook Id');
+                  _showBottomSheet(context,'Facebook Id',1,facebookId);
 
                   // Handle edit action
                 },
@@ -271,14 +365,14 @@ class _UserSinglePageState extends State<UserSinglePage> {
               ),
               leading: Icon(Icons.email,color: Colors.grey),
               title: Text(
-                'john.doe@example.com',
-                  style: GoogleFonts.roboto(),
+                emailId==""?'--':emailId,
+                style: GoogleFonts.roboto(),
               ),
               subtitle: Text('Email',style: GoogleFonts.roboto(color: Colors.grey),),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {
-                  _showBottomSheet(context,'Email Id');
+                  _showBottomSheet(context,'Email Id',2,emailId);
 
                   // Handle edit action
                 },
@@ -291,13 +385,14 @@ class _UserSinglePageState extends State<UserSinglePage> {
               ),
               leading: Image.asset(ImageConstants.twitter,width: 20,height: 20,color: Colors.grey,),
               title: Text(
-                '@johndoe',
-                style: GoogleFonts.roboto(),              ),
+                twitterId==""?'--':twitterId,
+                style: GoogleFonts.roboto(),
+              ),
               subtitle: Text('Twitter',style: GoogleFonts.roboto(color: Colors.grey),),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {
-                  _showBottomSheet(context,'Twitter');
+                  _showBottomSheet(context,'Twitter',3,twitterId);
                   // Handle edit action
                 },
               ),
@@ -309,13 +404,14 @@ class _UserSinglePageState extends State<UserSinglePage> {
               ),
               leading: Image.asset(ImageConstants.linkedinIcon,color: Colors.grey,height: 20,width: 20,),
               title: Text(
-                'linkedin.com/in/johndoe',
-                style: GoogleFonts.roboto(),              ),
+                LinkdnId==""?'--':LinkdnId,
+                style: GoogleFonts.roboto(),
+              ),
               subtitle: Text('Linkedin',style: GoogleFonts.roboto(color: Colors.grey),),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {
-                  _showBottomSheet(context,'Linkedin Id');
+                  _showBottomSheet(context,'Linkedin Id',4,LinkdnId);
 
                   // Handle edit action
                 },
@@ -328,13 +424,14 @@ class _UserSinglePageState extends State<UserSinglePage> {
               ),
               leading: Image.asset(ImageConstants.instaIcon,color: Colors.grey,height: 20,width: 20,),
               title: Text(
-                'instagram.com/johndoe',
-                style: GoogleFonts.roboto(),              ),
+                instaId==""?'--':instaId,
+                style: GoogleFonts.roboto(),
+              ),
               subtitle: Text('Instagram',style: GoogleFonts.roboto(color: Colors.grey),),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {
-                  _showBottomSheet(context,'Instagram Id');
+                  _showBottomSheet(context,'Instagram Id',5,instaId);
 
                   // Handle edit action
                 },
@@ -347,13 +444,14 @@ class _UserSinglePageState extends State<UserSinglePage> {
               ),
               leading:Icon(Icons.language,color: Colors.grey),
               title: Text(
-                'www.johndoe.com',
-                style: GoogleFonts.roboto(),              ),
+                website==""?'--':website,
+                style: GoogleFonts.roboto(),
+              ),
               subtitle: Text('Website',style: GoogleFonts.roboto(color: Colors.grey),),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {
-                  _showBottomSheet(context,'Website');
+                  _showBottomSheet(context,'Website',6,website);
 
                   // Handle edit action
                 },

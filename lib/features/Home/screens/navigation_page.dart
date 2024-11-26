@@ -346,6 +346,7 @@ import 'package:qctt/features/Home/screens/recent_call_log_page.dart';
 import 'package:qctt/features/Home/screens/splash_screen.dart';
 
 import '../../../core/pallette/pallete.dart';
+import '../../card/screens/card_page.dart';
 import '../../group/screens/group_share_page.dart';
 import 'contacts_page.dart';
 
@@ -377,7 +378,8 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
 
 
     ContactsPage(),
-    GroupSharePage()
+    CardPage(),
+    // GroupSharePage()
     // QuickContactPage(),
     // QuickContactPage(),
 
