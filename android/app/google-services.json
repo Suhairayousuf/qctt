@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "779885097819",
+    "project_id": "qctt-998e6",
+    "storage_bucket": "qctt-998e6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:779885097819:android:327201f63acf5a223f207e",
+        "android_client_info": {
+          "package_name": "com.qctt.qctt"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcI32O_8z2ZsM0iwlIUI2mMtbBsMrrOQo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
