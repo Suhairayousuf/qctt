@@ -10,6 +10,8 @@ class ImageConstants{
   static const wpIcon ='assets/images/wp.png';
   static const user ='assets/images/user.png';
   static const twitter ='assets/images/twitter.png';
+  static const linkedin2 ='assets/images/linkedin2.png';
+  static const facebook ='assets/images/facebook.png';
 
 
 }

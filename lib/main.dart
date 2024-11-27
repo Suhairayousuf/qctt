@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'features/Home/screens/contacts_page.dart';
+import 'features/card/screens/add_card_page.dart';
 import 'features/card/screens/card_page.dart';
 import 'features/group/screens/add_group_page.dart';
 import 'features/Home/screens/navigation_page.dart';
@@ -56,6 +57,7 @@ class MyApp extends StatelessWidget {
          '/ContactsPage': (context) => ContactsPage(),
          '/CallLogPage': (context) => CallLogPage(),
          '/CardPage': (context) => CardPage(),
+         '/AddCardDetailsPage': (context) => AddCardDetailsPage(),
 
 
       },
