@@ -115,7 +115,7 @@ void initState() {
         elevation: 1.0, // Increase for more shadow
         shadowColor: Colors.grey,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios,size: width*0.045,),
+          icon: Icon(Icons.arrow_back_ios,size: width*0.05,),
           onPressed: () {
             Navigator.pop(context); // Goes back to the previous screen
           },
@@ -190,7 +190,7 @@ void initState() {
                             padding: EdgeInsets.symmetric(vertical: 5, horizontal: 12), // Adjust padding as needed
                             child: Column(
                               children: [
-                                SizedBox(height: 8), // Space between items
+                                SizedBox(height: width*0.02), // Space between items
 
                                 Row(
                                   mainAxisAlignment: MainAxisAlignment.spaceBetween, // Space out widgets
@@ -202,7 +202,7 @@ void initState() {
                                       backgroundColor: Colors.black,
                                       child: Icon(Icons.person, color: Colors.white, size: width * 0.08),
                                     ),
-                                    SizedBox(width: 16), // Space between leading and title
+                                    SizedBox(width: width * 0.02), // Space between leading and title
 
                                     // Title and Subtitle
                                     Expanded(
@@ -249,12 +249,12 @@ void initState() {
                                             );
                                           },
                                           child: CircleAvatar(
-                                            radius: 22,
+                                            radius: width * 0.05,
                                             backgroundColor: Colors.green.shade700,
                                             child: Icon(Icons.group_sharp, color: Colors.white, size: width * 0.08),
                                           ),
                                         ),
-                                        SizedBox(width: 5),
+                                        SizedBox(width: width * 0.02),
                                         InkWell(
                                           onTap: () async {
                                             String whatsappNumber = "+91" + (contact.phone.toString() ?? "");
@@ -268,7 +268,7 @@ void initState() {
                                             }
                                           },
                                           child: CircleAvatar(
-                                            radius: 22,
+                                            radius: width * 0.05,
                                             backgroundColor: Colors.green.shade700,
                                             child: Image.asset(
                                               ImageConstants.whatsapp,
@@ -278,7 +278,8 @@ void initState() {
                                             ),
                                           ),
                                         ),
-                                        SizedBox(width: 5),
+                                        SizedBox(width: width * 0.02),
+
                                         InkWell(
                                           onTap: () async {
                                             String phoneNumber = "+91" + (contact.phone.toString() ?? "");
@@ -291,7 +292,7 @@ void initState() {
                                             }
                                           },
                                           child: CircleAvatar(
-                                            radius: 22,
+                                            radius: width * 0.05,
                                             backgroundColor: primaryColor,
                                             child: Icon(Icons.call, color: Colors.white, size: width * 0.06),
                                           ),
@@ -300,7 +301,7 @@ void initState() {
                                     ),
                                   ],
                                 ),
-                                SizedBox(height: 8), // Space between items
+                                SizedBox(height: width * 0.025), // Space between items
                                 Divider(color: Colors.grey.shade300), // Add divider
                               ],
                             ),

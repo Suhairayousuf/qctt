@@ -76,7 +76,7 @@ class _CallLogPageState extends State<CallLogPage> {
               },
               child: Container(
                 color: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 12), // Adjust padding as needed
+                padding: EdgeInsets.symmetric(vertical:  width*0.01, horizontal:  width*0.04), // Adjust padding as needed
 
                 child: Column(
                   children: [
@@ -96,6 +96,7 @@ class _CallLogPageState extends State<CallLogPage> {
                         // Title and Subtitle
                         Expanded(
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
                             children: [
                               contact.name!= null  && contact.name!=" "?
@@ -105,7 +106,8 @@ class _CallLogPageState extends State<CallLogPage> {
                                 children: [
                                   contact.number != null && contact.number!.isNotEmpty?
                                   Text(contact.number?? "No Phone Number", style: GoogleFonts.inter(color: Colors.grey, fontSize: width * 0.032),):Text(" ")
-                                  ,                  Text( DateFormat('dd MMM yyyy, hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(contact.timestamp!),),style: GoogleFonts.inter(color: Colors.grey, fontSize: width * 0.025) ,)
+                                  , Text( DateFormat('dd MMM yyyy, hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(contact.timestamp!),),style: GoogleFonts.inter(color: Colors.grey, fontSize: width * 0.025) ,)
+
                                 ],
                               ) ,
 
@@ -137,7 +139,7 @@ class _CallLogPageState extends State<CallLogPage> {
                                 child: Icon(Icons.group_sharp, color: Colors.white, size: width * 0.08),
                               ),
                             ),
-                            SizedBox(width: 5),
+                            SizedBox(width: width * 0.025),
                             InkWell(
                               onTap: () async {
                                 String whatsappNumber = "+91" + (contact.number.toString() ?? "");
@@ -161,7 +163,7 @@ class _CallLogPageState extends State<CallLogPage> {
                                 ),
                               ),
                             ),
-                            SizedBox(width: 5),
+                            SizedBox(width: width * 0.025),
                             InkWell(
                               onTap: () async {
                                 String phoneNumber = "+91" + (contact.number.toString() ?? "");

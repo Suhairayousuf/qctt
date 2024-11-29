@@ -13,7 +13,6 @@ import 'features/Home/screens/splash_screen.dart';
 import 'features/group/screens/add_member_page.dart';
 import 'features/group/screens/addmember_from_group.dart';
 import 'features/group/screens/group_detailes_page.dart';
-import 'features/group/screens/group_share_page.dart';
 import 'features/user/screens/edit_user_data.dart';
 import 'features/user/screens/user_single_page.dart';
 import 'firebase_options.dart';
@@ -54,7 +53,6 @@ class MyApp extends StatelessWidget {
         '/AddMemberPage': (context) => AddMemberPage(type: false, groupId: '',),
         '/UserSinglePage': (context) => UserSinglePage(),
          '/EditUserDetails': (context) => EditUserDetails(),
-         '/GroupSharePage': (context) => GroupSharePage(),
          '/ContactsPage': (context) => ContactsPage(),
          '/CallLogPage': (context) => CallLogPage(),
          '/CardPage': (context) => CardPage(),

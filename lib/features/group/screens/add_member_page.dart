@@ -226,7 +226,7 @@ class _AddMemberPageState extends State<AddMemberPage> {
         backgroundColor: Colors.white,
         appBar: AppBar(
           leading: IconButton(
-            icon: Icon(Icons.arrow_back_ios, size: 24),
+            icon: Icon(Icons.arrow_back_ios, size: width*0.05),
             onPressed: () {
               Navigator.pop(context);
             },
@@ -235,7 +235,7 @@ class _AddMemberPageState extends State<AddMemberPage> {
           backgroundColor: Colors.white,
           title: Text(
             'Add Member',
-            style: GoogleFonts.roboto(fontSize: 20),
+            style: GoogleFonts.roboto(fontSize: width*0.05),
           ),
         ),
         body: Column(
@@ -247,11 +247,11 @@ class _AddMemberPageState extends State<AddMemberPage> {
 
                   // width: scrWidth,
                   // height: textFormFieldHeight45,
-                  width: 400,
-                  height: 50,
+                  width: width*0.95,
+                  height: width*0.11,
                   padding: EdgeInsets.symmetric(
-                    horizontal: width * 0.03,
-                    vertical: 2.5,
+                      horizontal: width * 0.03,
+                      vertical: width * 0.01
                   ),
                   decoration: BoxDecoration(
                     boxShadow: [
@@ -299,7 +299,7 @@ class _AddMemberPageState extends State<AddMemberPage> {
                       hintStyle: GoogleFonts.inter(
                         color: Colors.black,
                         fontWeight: FontWeight.w300,
-                        fontSize: 14,
+                        fontSize: width * 0.035,
                         // fontFamily: 'Urbanist',
                       ),
                       fillColor:Colors.white,

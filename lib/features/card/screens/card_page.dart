@@ -187,7 +187,7 @@ class _CardPageState extends State<CardPage> {
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Padding(
-                                    padding: EdgeInsets.only(left: 18.0, top: 18),
+                                    padding: EdgeInsets.only(left: width * 0.04, top: width * 0.04),
                                     child: IconButton(
                                       icon: Icon(Icons.close, color: Colors.white),
                                       onPressed: () async {
@@ -213,7 +213,7 @@ class _CardPageState extends State<CardPage> {
                                     ),
                                   ),
                                   Padding(
-                                    padding: EdgeInsets.only(right: width * 0.1, top: 18),
+                                    padding: EdgeInsets.only(right: width * 0.1, top: width * 0.04),
                                     child: Row(
                                       children: [
                                         IconButton(
@@ -249,28 +249,28 @@ class _CardPageState extends State<CardPage> {
                               Center(
                                 child: Text(
                                   cardsList[index].name, // Replace with dynamic card name if needed
-                                  style: TextStyle(fontSize: 24, color: Colors.white, fontWeight: FontWeight.bold),
+                                  style: TextStyle(fontSize: width * 0.08, color: Colors.white, fontWeight: FontWeight.bold),
                                 ),
                               ),
-                              SizedBox(height: 10),
+                              SizedBox(height: width * 0.03),
                               Padding(
                                 padding: EdgeInsets.only(left: width * 0.15),
                                 child: Column(
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.call, size: 30, color: Colors.white),
+                                      icon: Icon(Icons.call, size: width * 0.06, color: Colors.white),
                                       onPressed: () {
                                         print("Call icon pressed");
                                       },
                                     ),
                                     IconButton(
-                                      icon: Icon(Icons.mail, size: 30, color: Colors.white),
+                                      icon: Icon(Icons.mail, size: width * 0.06, color: Colors.white),
                                       onPressed: () {
                                         print("Mail icon pressed");
                                       },
                                     ),
                                     IconButton(
-                                      icon: Icon(Icons.language, size: 30, color: Colors.white),
+                                      icon: Icon(Icons.language, size: width * 0.06, color: Colors.white),
                                       onPressed: () {
                                         print("Web icon pressed");
                                       },
@@ -278,7 +278,7 @@ class _CardPageState extends State<CardPage> {
                                   ],
                                 ),
                               ),
-                              SizedBox(height: 15),
+                              SizedBox(height: width * 0.05),
                               InkWell(
                                 onTap: () {
                                   _showBottomSheet(context,cardsList[index].whatsapp.toString(),cardsList[index].facebook.toString()
@@ -290,32 +290,32 @@ class _CardPageState extends State<CardPage> {
                                     SizedBox(
                                       child: Image.asset(
                                         ImageConstants.whatsapp,
-                                        height: 35,
+                                        height: width * 0.09,
                                         color: Colors.white,
                                       ),
                                     ),
-                                    SizedBox(width: width * 0.02),
+                                    SizedBox(width: width * 0.01),
                                     IconButton(
-                                      icon: Icon(Icons.facebook, size: 40, color: Colors.white),
+                                      icon: Icon(Icons.facebook, size: width * 0.1, color: Colors.white),
                                       onPressed: () {
                                         print("Facebook icon pressed");
                                       },
                                     ),
-                                    SizedBox(width: width * 0.02),
+                                    SizedBox(width: width * 0.01),
                                     SizedBox(
                                       child: Image.asset(
                                         ImageConstants.linkedin2,
-                                        height: 30,
+                                        height: width * 0.08,
                                         color: Colors.white,
                                       ),
                                     ),
-                                    SizedBox(width: width * 0.04),
+                                    SizedBox(width: width * 0.03),
                                     CircleAvatar(
-                                      radius: 15,
+                                      radius: width * 0.045,
                                       backgroundColor: Colors.white,
                                       child: Image.asset(
                                         ImageConstants.twitter,
-                                        height: 20,
+                                        height: width * 0.06,
                                         color: primaryColor,
                                       ),
                                     ),
@@ -346,14 +346,14 @@ class _CardPageState extends State<CardPage> {
                 style: ElevatedButton.styleFrom(
                   foregroundColor: Colors.white,
                   backgroundColor: Colors.blue,
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  padding: EdgeInsets.symmetric(horizontal: width * 0.04, vertical: width * 0.01),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                 ),
                 child: Text(
                   "Add Card",
-                  style: TextStyle(fontSize: 16),
+                  style: TextStyle(fontSize: width * 0.04),
                 ),
               )
             ],

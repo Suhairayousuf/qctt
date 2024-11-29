@@ -128,10 +128,7 @@ class _ContactsPageState extends State<ContactsPage> {
           backgroundColor: Colors.white,
 
           automaticallyImplyLeading: false,
-          title: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Text('Contacts',style: GoogleFonts.roboto(fontSize: width*0.05),),
-          ),
+          title: Text('Contacts',style: GoogleFonts.roboto(fontSize: width*0.05),),
         ),
         body:
         totalContactsSearch.isEmpty?Center(child: CircularProgressIndicator()):
@@ -144,11 +141,11 @@ class _ContactsPageState extends State<ContactsPage> {
 
                   // width: scrWidth,
                   // height: textFormFieldHeight45,
-                  width: 400,
-                  height: 50,
+                  width: width*0.95,
+                  height: width*0.11,
                   padding: EdgeInsets.symmetric(
                     horizontal: width * 0.03,
-                    vertical: 2.5,
+                    vertical: width * 0.01
                   ),
                   decoration: BoxDecoration(
                     boxShadow: [
@@ -178,7 +175,7 @@ class _ContactsPageState extends State<ContactsPage> {
                     style: GoogleFonts.inter(
                       color: Colors.black,
                       fontWeight: FontWeight.w300,
-                      fontSize: 14,
+                      fontSize: width * 0.03,
 
                     ),
                     decoration: InputDecoration(
@@ -195,7 +192,7 @@ class _ContactsPageState extends State<ContactsPage> {
                       hintStyle: GoogleFonts.inter(
                         color: Colors.black,
                         fontWeight: FontWeight.w300,
-                        fontSize: 14,
+                        fontSize: width * 0.035,
                         // fontFamily: 'Urbanist',
                       ),
                       fillColor:Colors.white,
@@ -224,9 +221,10 @@ class _ContactsPageState extends State<ContactsPage> {
                     },
                     child: Container(
                       color: Colors.white,
-                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 12), // Adjust padding as needed
+                      padding: EdgeInsets.symmetric(vertical: width * 0.018, horizontal: width * 0.03), // Adjust padding as needed
                       child: Column(
                         children: [
+                          // SizedBox(height: width * 0.01,),
 
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween, // Space out widgets
@@ -238,7 +236,7 @@ class _ContactsPageState extends State<ContactsPage> {
                                 backgroundColor: Colors.black,
                                 child: Icon(Icons.person, color: Colors.white, size: width * 0.08),
                               ),
-                              SizedBox(width: 16), // Space between leading and title
+                              SizedBox(width: width * 0.03), // Space between leading and title
 
                               // Title and Subtitle
                               Expanded(
@@ -289,7 +287,7 @@ class _ContactsPageState extends State<ContactsPage> {
                                       child: Icon(Icons.group_sharp, color: Colors.white, size: width * 0.08),
                                     ),
                                   ),
-                                  SizedBox(width: 5),
+                                  SizedBox(width: width * 0.025),
                                   InkWell(
                                     onTap: () async {
                                       String whatsappNumber = "+91" + (contact.phones!.first.value.toString() ?? "");
@@ -313,7 +311,7 @@ class _ContactsPageState extends State<ContactsPage> {
                                       ),
                                     ),
                                   ),
-                                  SizedBox(width: 5),
+                                  SizedBox(width: width * 0.025),
                                   InkWell(
                                     onTap: () async {
                                       String phoneNumber = "+91" + (contact.phones!.first.value.toString() ?? "");
@@ -335,7 +333,7 @@ class _ContactsPageState extends State<ContactsPage> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 8), // Space between items
+                          SizedBox(height: width * 0.023), // Space between items
                           Divider(color: Colors.grey.shade300), // Add divider
                         ],
                       ),
