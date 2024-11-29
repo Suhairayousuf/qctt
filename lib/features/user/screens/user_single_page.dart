@@ -326,7 +326,7 @@ class _UserSinglePageState extends State<UserSinglePage> {
               ),
               leading: Image.asset(ImageConstants.whatsapp,color: Colors.grey,height: 20,width: 20,),
               title: Text(
-                whatsappNo==""?'--':whatsappNo,
+                whatsappNo==""?phno:whatsappNo,
                 style: GoogleFonts.roboto(),
               ),
               subtitle: Text('WhatsApp',style: GoogleFonts.roboto(color: Colors.grey),),

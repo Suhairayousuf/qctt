@@ -9,6 +9,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
+import 'package:qctt/core/constants/firebase_constants.dart';
 import 'package:qctt/core/pallette/pallete.dart';
 import 'package:qctt/features/Home/screens/splash_screen.dart';
 import 'package:qctt/models/group_model.dart';
@@ -18,6 +19,7 @@ import '../../../core/utils/utils.dart';
 import '../../Home/screens/navigation_page.dart';
 import '../controller/group_controller.dart';
 import 'add_member_page.dart';
+import 'addmember_from_group.dart';
 
 class EditGroupPage extends ConsumerStatefulWidget {
   final String groupId;
@@ -91,7 +93,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
   final cardTitle = TextEditingController();
   Color selectedColor = Colors.blueGrey;
   UpdateGroup(BuildContext context, GroupModel groupData, List<MemberModel> memberList){
-    ref.read(groupControllerProvider.notifier).addGroup(context: context,groupModel: groupData,members:memberList);
+    ref.read(groupControllerProvider.notifier).updateGroup(context: context,groupModel: groupData,members:memberList);
 
 
 
@@ -99,7 +101,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
   @override
   void initState() {
     cardTitle.text = widget.groupName; // Set group name
-    selectedColor =  Color(int.parse("0x" + widget.color.replaceAll("#", ""))); // Set color
+    selectedColor = widget.color=="" ?Colors.blueGrey:Color(int.parse("0x" + widget.color.replaceAll("#", ""))); // Set color
     downloadUrl = widget.image; // Set image URL
     memberList = widget.memberList; // Set image URL
      // Prepopulate members
@@ -341,7 +343,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
                       onPressed: () async {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => AddMemberPage(type: false, groupId: '',)),
+                          MaterialPageRoute(builder: (context) => AddMemberPage(type: false, groupId:widget.groupId ,)),
                         ).then((value) {
                           // Make sure the returned value is of the expected type
                           if (value is List) {
@@ -425,6 +427,10 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
                             setState(() {
                               if (isExistingMember) {
                                 widget.memberList.removeAt(index);
+                                FirebaseFirestore.instance.
+                                collection(FirebaseConstants.groups).
+                                doc(widget.groupId).collection(FirebaseConstants.members).
+                                doc( widget.memberList[index].memberId).delete();
                               } else {
                                 addedMembers.removeAt(index - widget.memberList.length);
                               }
@@ -462,10 +468,10 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
               backgroundColor: Colors.white,
               onPressed: () async {
                 if(cardTitle.text != ""){
-                  bool? confirmed = await AddCardPopup.show(
+                  bool? confirmed = await EditPopup.show(
                     context: context,
-                    title: "Add Card",
-                    content: "Are you sure you want to add Card?",
+                    title: "Edit Card",
+                    content: "Are you sure you want to Edit Card?",
                     // primaryColor:primaryColor, // Use app's primary color
                     primaryColor:primaryColor, // Use app's primary color
                   );
@@ -474,7 +480,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
                     final groupData = GroupModel(
                       groupName: cardTitle.text.trim(),
                       date: DateTime.now(),
-                      groupId: '',
+                      groupId: widget.groupId,
                       delete:false,
                       color:hexColor??"",
                       image: downloadUrl??"",
@@ -509,7 +515,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
 
                     // admins1=[];
                     showUploadMessage(context,
-                      'Card added suceesfully',);
+                      'Group updated successfully',);
                     // Perform the delete action
                     // setState(() {
                     //   // items.removeAt(index); // Example: remove the item from the list

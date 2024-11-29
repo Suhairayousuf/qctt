@@ -11,6 +11,7 @@ import 'features/Home/screens/home_page.dart';
 import 'features/Home/screens/recent_call_log_page.dart';
 import 'features/Home/screens/splash_screen.dart';
 import 'features/group/screens/add_member_page.dart';
+import 'features/group/screens/addmember_from_group.dart';
 import 'features/group/screens/group_detailes_page.dart';
 import 'features/group/screens/group_share_page.dart';
 import 'features/user/screens/edit_user_data.dart';
@@ -58,6 +59,7 @@ class MyApp extends StatelessWidget {
          '/CallLogPage': (context) => CallLogPage(),
          '/CardPage': (context) => CardPage(),
          '/AddCardDetailsPage': (context) => AddCardDetailsPage(),
+         '/AddMemberFromEditPage': (context) => AddMemberFromEditPage(type:false, groupId: '',),
 
 
       },

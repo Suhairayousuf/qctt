@@ -216,7 +216,7 @@ class _AddMemberPageState extends State<AddMemberPage> {
 
       });
     }
-    showSnackBar(context, 'Member added successfulyy');
+    showSnackBar(context, 'Member added successfully');
     Navigator.pop(context);
   }
 

@@ -96,28 +96,17 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
     log(hexColor);
     return
       // WillPopScope(
-      // onWillPop: () async {
-      //   final shouldPop = await showDialog<bool>(
-      //     context: context,
-      //     builder: (context) =>
-      //         AlertDialog(
-      //           title:  Text('Are you sure?',style: GoogleFonts.inter(color: primaryColor)),
-      //           content:  Text('Do you really want to Exit?',style: GoogleFonts.inter()),
-      //           actions: <Widget>[
-      //             TextButton(
-      //               onPressed: () => Navigator.of(context).pop(false),
-      //               child: Text('No',style: GoogleFonts.inter(color: primaryColor)),
-      //             ),
-      //             TextButton(
-      //               onPressed: () => Navigator.of(context).pop(true),
-      //               child:  Text('Yes',style: GoogleFonts.inter(color: primaryColor),),
-      //             ),
-      //           ],
-      //         ),
-      //   );
-      //   return shouldPop ?? false;
-      // },
-      // child:
+    //     onWillPop: () async {
+    //   Navigator.pushAndRemoveUntil(
+    //     context,
+    //     MaterialPageRoute(
+    //       builder: (context) => NavigationBarPage(initialIndex: 0),
+    //     ),
+    //         (route) => false,
+    //   );
+    //   return false; // Returning false ensures the current page will not pop.
+    // },
+    //   child:
       Scaffold(
          backgroundColor: Colors.white,
         appBar: AppBar(
@@ -463,6 +452,7 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
           ),
         ),
       );
-    // );
+
+     // );
   }
 }

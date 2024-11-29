@@ -8,6 +8,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants/images/images.dart';
 import '../../../core/pallette/pallete.dart';
+import 'navigation_page.dart';
 
 class CallLogPage extends StatefulWidget {
   @override
@@ -41,245 +42,257 @@ class _CallLogPageState extends State<CallLogPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-          title: Text('Recent Call Log',style: GoogleFonts.inter(),)),
-      body: _callLogs.isEmpty
-          ? Center(child: CircularProgressIndicator())
-          :ListView.builder(
-        itemCount: _callLogs.length,
-        itemBuilder: (context, index) {
-          final contact = _callLogs[index];
-          return InkWell(
-            onTap: (){
+    return WillPopScope(
+        onWillPop: () async {
+        Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => NavigationBarPage(initialIndex: 0),
+          ),
+              (route) => false,
+        );
+        return false; // Returning false ensures the current page will not pop.
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          automaticallyImplyLeading: false,
+            title: Text('Recent Call Log',style: GoogleFonts.inter(),)),
+        body: _callLogs.isEmpty
+            ? Center(child: CircularProgressIndicator())
+            :ListView.builder(
+          itemCount: _callLogs.length,
+          itemBuilder: (context, index) {
+            final contact = _callLogs[index];
+            return InkWell(
+              onTap: (){
 
-              // Navigator.pushNamed(context, '/UserSinglePage',
-              //   arguments: {
-              //     // 'name': _contacts[index].name,
-              //     // 'members': index,
-              //   },
-              // );
-            },
-            child: Container(
-              color: Colors.white,
-              padding: EdgeInsets.symmetric(vertical: 5, horizontal: 12), // Adjust padding as needed
+                // Navigator.pushNamed(context, '/UserSinglePage',
+                //   arguments: {
+                //     // 'name': _contacts[index].name,
+                //     // 'members': index,
+                //   },
+                // );
+              },
+              child: Container(
+                color: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 5, horizontal: 12), // Adjust padding as needed
 
-              child: Column(
-                children: [
-                  // SizedBox(height: 10,),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween, // Space out widgets
-                    crossAxisAlignment: CrossAxisAlignment.center, // Align items in the center vertically
-                    children: [
-                      // Leading widget
-                      CircleAvatar(
-                        radius: 22,
-                        backgroundColor: Colors.black,
-                        child: Icon(Icons.person, color: Colors.white, size: width * 0.08),
-                      ),
-                      SizedBox(width: 16), // Space between leading and title
-
-                      // Title and Subtitle
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
-                          children: [
-                            contact.name!= null  && contact.name!=" "?
-                            Text(contact.name.toString(),style: GoogleFonts.roboto(color: Colors.black,fontSize:  width*0.036,fontWeight: FontWeight.w500),):Text(" "),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                contact.number != null && contact.number!.isNotEmpty?
-                                Text(contact.number?? "No Phone Number", style: GoogleFonts.inter(color: Colors.grey, fontSize: width * 0.032),):Text(" ")
-                                ,                  Text( DateFormat('dd MMM yyyy, hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(contact.timestamp!),),style: GoogleFonts.inter(color: Colors.grey, fontSize: width * 0.025) ,)
-                              ],
-                            ) ,
-
-                          ],
+                child: Column(
+                  children: [
+                    // SizedBox(height: 10,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween, // Space out widgets
+                      crossAxisAlignment: CrossAxisAlignment.center, // Align items in the center vertically
+                      children: [
+                        // Leading widget
+                        CircleAvatar(
+                          radius: 22,
+                          backgroundColor: Colors.black,
+                          child: Icon(Icons.person, color: Colors.white, size: width * 0.08),
                         ),
-                      ),
+                        SizedBox(width: 16), // Space between leading and title
 
-                      // Trailing Actions
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          InkWell(
-                            onTap: (){
-                              Navigator.pushNamed(
-                                context,
-                                '/UserSinglePage',
-                                arguments: {
-                                  // 'groupId':groupId,
-                                  // 'memberid': contact.memberId,
-                                  'name': contact.name,
-                                  'phNumber':contact.number.toString()
+                        // Title and Subtitle
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
+                            children: [
+                              contact.name!= null  && contact.name!=" "?
+                              Text(contact.name.toString(),style: GoogleFonts.roboto(color: Colors.black,fontSize:  width*0.036,fontWeight: FontWeight.w500),):Text(" "),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  contact.number != null && contact.number!.isNotEmpty?
+                                  Text(contact.number?? "No Phone Number", style: GoogleFonts.inter(color: Colors.grey, fontSize: width * 0.032),):Text(" ")
+                                  ,                  Text( DateFormat('dd MMM yyyy, hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(contact.timestamp!),),style: GoogleFonts.inter(color: Colors.grey, fontSize: width * 0.025) ,)
+                                ],
+                              ) ,
 
-                                },
-                              );
-                            },
-                            child: CircleAvatar(
-                              radius: 22,
-                              backgroundColor: Colors.green.shade700,
-                              child: Icon(Icons.group_sharp, color: Colors.white, size: width * 0.08),
-                            ),
+                            ],
                           ),
-                          SizedBox(width: 5),
-                          InkWell(
-                            onTap: () async {
-                              String whatsappNumber = "+91" + (contact.number.toString() ?? "");
-                              String url = "https://wa.me/$whatsappNumber";
+                        ),
 
-                              if (await canLaunch(url)) {
-                                await launch(url);
-                              } else {
-                                print('Could not launch $url');
-                                throw 'Could not launch $url';
-                              }
-                            },
-                            child: CircleAvatar(
-                              radius: 22,
-                              backgroundColor: Colors.green.shade700,
-                              child: Image.asset(
-                                ImageConstants.whatsapp,
-                                color: Colors.white,
-                                height: width * 0.06,
-                                width: width * 0.06,
+                        // Trailing Actions
+                        Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            InkWell(
+                              onTap: (){
+                                Navigator.pushNamed(
+                                  context,
+                                  '/UserSinglePage',
+                                  arguments: {
+                                    // 'groupId':groupId,
+                                    // 'memberid': contact.memberId,
+                                    'name': contact.name,
+                                    'phNumber':contact.number.toString()
+
+                                  },
+                                );
+                              },
+                              child: CircleAvatar(
+                                radius: 22,
+                                backgroundColor: Colors.green.shade700,
+                                child: Icon(Icons.group_sharp, color: Colors.white, size: width * 0.08),
                               ),
                             ),
-                          ),
-                          SizedBox(width: 5),
-                          InkWell(
-                            onTap: () async {
-                              String phoneNumber = "+91" + (contact.number.toString() ?? "");
-                              final Uri url = Uri(scheme: 'tel', path: phoneNumber);
+                            SizedBox(width: 5),
+                            InkWell(
+                              onTap: () async {
+                                String whatsappNumber = "+91" + (contact.number.toString() ?? "");
+                                String url = "https://wa.me/$whatsappNumber";
 
-                              if (await canLaunchUrl(url)) {
-                                await launchUrl(url);
-                              } else {
-                                throw 'Could not launch $url';
-                              }
-                            },
-                            child: CircleAvatar(
-                              radius: 22,
-                              backgroundColor: primaryColor,
-                              child: Icon(Icons.call, color: Colors.white, size: width * 0.06),
+                                if (await canLaunch(url)) {
+                                  await launch(url);
+                                } else {
+                                  print('Could not launch $url');
+                                  throw 'Could not launch $url';
+                                }
+                              },
+                              child: CircleAvatar(
+                                radius: 22,
+                                backgroundColor: Colors.green.shade700,
+                                child: Image.asset(
+                                  ImageConstants.whatsapp,
+                                  color: Colors.white,
+                                  height: width * 0.06,
+                                  width: width * 0.06,
+                                ),
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-         //          ListTile(
-         //
-         //            leading: InkWell(
-         //
-         //              child: CircleAvatar(
-         //                backgroundColor: Colors.black,
-         //                child: Icon(Icons.person, color: Colors.white),
-         //              ),
-         //            ),
-         //            title: InkWell(
-         //                child:contact.name!= null  && contact.name!=" "?
-         //                Text(contact.name.toString(),style: GoogleFonts.inter(color: Colors.black,fontSize:  width*0.035),):Text(" ")
-         //            ),
-         //            subtitle:
-         //             Column(
-         //               crossAxisAlignment: CrossAxisAlignment.start,
-         //                  children: [
-         //                    contact.number != null && contact.number!.isNotEmpty?
-         //                    Text(contact.number?? "No Phone Number", style: GoogleFonts.inter(color: Colors.grey, fontSize: width * 0.025),):Text(" ")
-         // ,                  Text( DateFormat('dd MMM yyyy, hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(contact.timestamp!),),style: GoogleFonts.inter(color: Colors.grey, fontSize: width * 0.025) ,)
-         //                  ],
-         //                ) ,
-         //            trailing: Row(
-         //            mainAxisSize: MainAxisSize.min,
-         //            children: [
-         //              CircleAvatar(
-         //                backgroundColor: Colors.green.shade900,
-         //                child: Icon(Icons.group, color: primaryColor,size: 30,),
-         //              ),
-         //              SizedBox(width: 10),
-         //              InkWell(
-         //                onTap: () async {
-         //                  String whatsappNumber = "+91"+contact.number.toString()??"";
-         //
-         //                  String url = "https://wa.me/$whatsappNumber";
-         //
-         //
-         //                  if (await canLaunch(url)) {
-         //                    await launch(url);
-         //                  } else {
-         //                    print('Could not launch $url');
-         //                    throw 'Could not launch $url';
-         //                  }
-         //                },
-         //                child: CircleAvatar(
-         //                  backgroundColor: Colors.green.shade900,
-         //                  child: Image.asset(ImageConstants.whatsapp, color:primaryColor,height: 25,width: 25,),
-         //                ),
-         //              ),
-         //              SizedBox(width: 10),
-         //              InkWell(
-         //                onTap: () async {
-         //                  String phoneNumber = "+91"+contact.number.toString()??"";  // Enter your desired phone number here
-         //                  final Uri url = Uri(scheme: 'tel', path: phoneNumber);
-         //
-         //                  if (await canLaunchUrl(url)) {
-         //                    await launchUrl(url);
-         //                  } else {
-         //                    throw 'Could not launch $url';
-         //                  }
-         //                },
-         //                child: CircleAvatar(
-         //                  backgroundColor: primaryColor,
-         //                  child: Icon(Icons.call, color: Colors.white),
-         //                ),
-         //              ),
-         //            ],
-         //          ),
-         //          ),
-         //      SizedBox(height: 8), // Space between items
-              Divider(color: Colors.grey.shade300),
-                  // )
-                ],
+                            SizedBox(width: 5),
+                            InkWell(
+                              onTap: () async {
+                                String phoneNumber = "+91" + (contact.number.toString() ?? "");
+                                final Uri url = Uri(scheme: 'tel', path: phoneNumber);
+
+                                if (await canLaunchUrl(url)) {
+                                  await launchUrl(url);
+                                } else {
+                                  throw 'Could not launch $url';
+                                }
+                              },
+                              child: CircleAvatar(
+                                radius: 22,
+                                backgroundColor: primaryColor,
+                                child: Icon(Icons.call, color: Colors.white, size: width * 0.06),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+           //          ListTile(
+           //
+           //            leading: InkWell(
+           //
+           //              child: CircleAvatar(
+           //                backgroundColor: Colors.black,
+           //                child: Icon(Icons.person, color: Colors.white),
+           //              ),
+           //            ),
+           //            title: InkWell(
+           //                child:contact.name!= null  && contact.name!=" "?
+           //                Text(contact.name.toString(),style: GoogleFonts.inter(color: Colors.black,fontSize:  width*0.035),):Text(" ")
+           //            ),
+           //            subtitle:
+           //             Column(
+           //               crossAxisAlignment: CrossAxisAlignment.start,
+           //                  children: [
+           //                    contact.number != null && contact.number!.isNotEmpty?
+           //                    Text(contact.number?? "No Phone Number", style: GoogleFonts.inter(color: Colors.grey, fontSize: width * 0.025),):Text(" ")
+           // ,                  Text( DateFormat('dd MMM yyyy, hh:mm a').format(DateTime.fromMillisecondsSinceEpoch(contact.timestamp!),),style: GoogleFonts.inter(color: Colors.grey, fontSize: width * 0.025) ,)
+           //                  ],
+           //                ) ,
+           //            trailing: Row(
+           //            mainAxisSize: MainAxisSize.min,
+           //            children: [
+           //              CircleAvatar(
+           //                backgroundColor: Colors.green.shade900,
+           //                child: Icon(Icons.group, color: primaryColor,size: 30,),
+           //              ),
+           //              SizedBox(width: 10),
+           //              InkWell(
+           //                onTap: () async {
+           //                  String whatsappNumber = "+91"+contact.number.toString()??"";
+           //
+           //                  String url = "https://wa.me/$whatsappNumber";
+           //
+           //
+           //                  if (await canLaunch(url)) {
+           //                    await launch(url);
+           //                  } else {
+           //                    print('Could not launch $url');
+           //                    throw 'Could not launch $url';
+           //                  }
+           //                },
+           //                child: CircleAvatar(
+           //                  backgroundColor: Colors.green.shade900,
+           //                  child: Image.asset(ImageConstants.whatsapp, color:primaryColor,height: 25,width: 25,),
+           //                ),
+           //              ),
+           //              SizedBox(width: 10),
+           //              InkWell(
+           //                onTap: () async {
+           //                  String phoneNumber = "+91"+contact.number.toString()??"";  // Enter your desired phone number here
+           //                  final Uri url = Uri(scheme: 'tel', path: phoneNumber);
+           //
+           //                  if (await canLaunchUrl(url)) {
+           //                    await launchUrl(url);
+           //                  } else {
+           //                    throw 'Could not launch $url';
+           //                  }
+           //                },
+           //                child: CircleAvatar(
+           //                  backgroundColor: primaryColor,
+           //                  child: Icon(Icons.call, color: Colors.white),
+           //                ),
+           //              ),
+           //            ],
+           //          ),
+           //          ),
+           //      SizedBox(height: 8), // Space between items
+                Divider(color: Colors.grey.shade300),
+                    // )
+                  ],
+                ),
               ),
-            ),
-          );
-        },
+            );
+          },
+        ),
+
+
+
+
+
+        // ListView.builder(
+        //   itemCount: _callLogs.length,
+        //   itemBuilder: (context, index) {
+        //     final entry = _callLogs[index];
+        //     return ListTile(
+        //       // title: Text(entry.name ?? entry.number ?? "Unknown"),
+        //       title: Text(entry.name ?? ""),
+        //       // subtitle: Text(
+        //       //   "Call Type: ${entry.callType}\nDuration: ${entry.duration}s\nTime: ${DateTime.fromMillisecondsSinceEpoch(entry.timestamp!)}",
+        //       // ),
+        //       subtitle: Column(
+        //         mainAxisAlignment: MainAxisAlignment.start,
+        //         crossAxisAlignment: CrossAxisAlignment.start,
+        //         children: [
+        //           Text(
+        //             entry.number.toString(),
+        //           ),
+        //           Text( DateFormat('dd MMM yyyy, hh:mm a').format(
+        //         DateTime.fromMillisecondsSinceEpoch(entry.timestamp!),))
+        //
+        //         ],
+        //       ),
+        //       isThreeLine: true,
+        //     );
+        //   },
+        // ),
       ),
-
-
-
-
-
-      // ListView.builder(
-      //   itemCount: _callLogs.length,
-      //   itemBuilder: (context, index) {
-      //     final entry = _callLogs[index];
-      //     return ListTile(
-      //       // title: Text(entry.name ?? entry.number ?? "Unknown"),
-      //       title: Text(entry.name ?? ""),
-      //       // subtitle: Text(
-      //       //   "Call Type: ${entry.callType}\nDuration: ${entry.duration}s\nTime: ${DateTime.fromMillisecondsSinceEpoch(entry.timestamp!)}",
-      //       // ),
-      //       subtitle: Column(
-      //         mainAxisAlignment: MainAxisAlignment.start,
-      //         crossAxisAlignment: CrossAxisAlignment.start,
-      //         children: [
-      //           Text(
-      //             entry.number.toString(),
-      //           ),
-      //           Text( DateFormat('dd MMM yyyy, hh:mm a').format(
-      //         DateTime.fromMillisecondsSinceEpoch(entry.timestamp!),))
-      //
-      //         ],
-      //       ),
-      //       isThreeLine: true,
-      //     );
-      //   },
-      // ),
     );
   }
 }

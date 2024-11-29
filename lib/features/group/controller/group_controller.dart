@@ -24,13 +24,21 @@ class GroupController extends StateNotifier<bool>{
 
   GroupController({required GroupRepository groupRepository, required Ref ref})
       :_groupRepository = groupRepository, _ref = ref, super(false);
-
+///add group
   addGroup(  {required BuildContext context, required GroupModel groupModel, required List<MemberModel> members}){
     _groupRepository.addGroup( context: context,groupModel: groupModel, members: members,);
 
 
 
   }
+ ///update group
+  updateGroup(  {required BuildContext context, required GroupModel groupModel, required List<MemberModel> members}){
+    _groupRepository.updateGroup( context: context,groupModel: groupModel, members: members,);
+
+
+
+  }
+  ///fetch group
   Stream<List<GroupModel>>getGroups(){
     // final shopId=currentshopId;
     return

@@ -40,6 +40,7 @@ dependencies:
   flutter_card_swiper: ^7.0.2
   cloud_firestore: ^5.5.0
   flutter_colorpicker: ^1.1.0
+  share_plus:
   image_picker: ^0.8.7+3
   url_launcher: ^6.1.10
   contacts_service: ^0.6.3

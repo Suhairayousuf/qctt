@@ -28,15 +28,27 @@ class _HomePageState extends ConsumerState<HomePage> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        Navigator.pushAndRemoveUntil(
-          context,
-          MaterialPageRoute(
-            builder: (context) => NavigationBarPage(initialIndex: 0),
-          ),
-              (route) => false,
+        final shouldPop = await showDialog<bool>(
+          context: context,
+          builder: (context) =>
+              AlertDialog(
+                title:  Text('Are you sure?',style: GoogleFonts.inter(color: primaryColor)),
+                content:  Text('Do you really want to Exit?',style: GoogleFonts.inter()),
+                actions: <Widget>[
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(false),
+                    child: Text('No',style: GoogleFonts.inter(color: primaryColor)),
+                  ),
+                  TextButton(
+                    onPressed: () => Navigator.of(context).pop(true),
+                    child:  Text('Yes',style: GoogleFonts.inter(color: primaryColor),),
+                  ),
+                ],
+              ),
         );
-        return false; // Returning false ensures the current page will not pop.
+        return shouldPop ?? false;
       },
+
       child: Scaffold(
         backgroundColor: Colors.white,
         appBar: AppBar(
@@ -148,14 +160,14 @@ class _HomePageState extends ConsumerState<HomePage> {
                                             child: IconButton(
                                               icon: Icon(Icons.edit, color: Colors.white),
                                               onPressed: () async {
-                                                bool? confirmed = await EditPopup.show(
-                                                  context: context,
-                                                  title: "Edit Card",
-                                                  content: "Are you sure you want to Edit this Card?",
-                                                  primaryColor: primaryColor,
-                                                );
+                                                // bool? confirmed = await EditPopup.show(
+                                                //   context: context,
+                                                //   title: "Edit Card",
+                                                //   content: "Are you sure you want to Edit this Card?",
+                                                //   primaryColor: primaryColor,
+                                                // );
 
-                                                if (confirmed == true) {
+                                                // if (confirmed == true) {
                                                   Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
@@ -168,7 +180,7 @@ class _HomePageState extends ConsumerState<HomePage> {
                                                       ),
                                                     ),
                                                   );
-                                                }
+                                                // }
                                               },
                                             ),
                                           ),
