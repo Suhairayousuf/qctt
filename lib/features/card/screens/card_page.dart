@@ -11,8 +11,10 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/globals/functions.dart';
 import '../../../core/pallette/pallete.dart';
+import '../../../main.dart';
 import '../../../models/card_model.dart';
 import '../../Home/screens/navigation_page.dart';
+import '../../Home/screens/routing_page.dart';
 
 class CardPage extends StatefulWidget {
   @override
@@ -73,7 +75,7 @@ class _CardPageState extends State<CardPage> {
                           throw 'Could not launch $url';
                         }
                       },
-                      child: Text(whatsapp, style: GoogleFonts.roboto(fontSize: 25))),
+                      child: Text(whatsapp, style: GoogleFonts.inter(fontSize: 25))),
                 ],
               ),
               SizedBox(height: width * 0.09),
@@ -88,7 +90,7 @@ class _CardPageState extends State<CardPage> {
                         launchProfileURL(facebook.toString());
 
                       },
-                      child: Text(facebook, style: GoogleFonts.roboto(fontSize: 25))),
+                      child: Text(facebook, style: GoogleFonts.inter(fontSize: 25))),
                 ],
               ),
               SizedBox(height: width * 0.09),
@@ -102,7 +104,7 @@ class _CardPageState extends State<CardPage> {
                       onTap: (){
                         launchProfileURL(linkdn.toString());
                       },
-                      child: Text(linkdn, style: GoogleFonts.roboto(fontSize: 25))),
+                      child: Text(linkdn, style: GoogleFonts.inter(fontSize: 25))),
                 ],
               ),
               SizedBox(height: width * 0.09),
@@ -117,7 +119,7 @@ class _CardPageState extends State<CardPage> {
                       launchProfileURL(twitter.toString());
 
                     },
-                      child: Text(twitter, style: GoogleFonts.roboto(fontSize: 25))),
+                      child: Text(twitter, style: GoogleFonts.inter(fontSize: 25))),
                 ],
               ),
             ],

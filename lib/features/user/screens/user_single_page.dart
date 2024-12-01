@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:qctt/core/constants/images/images.dart';
 
+import '../../../main.dart';
 import '../../../models/member_model.dart';
+import '../../Home/screens/routing_page.dart';
 import '../../Home/screens/splash_screen.dart';
 
 
@@ -192,7 +194,7 @@ class _UserSinglePageState extends State<UserSinglePage> {
                 controller: _textController,
                 decoration: InputDecoration(
                   labelText: label,
-                  labelStyle: GoogleFonts.roboto(color: Colors.grey),
+                  labelStyle: GoogleFonts.inter(color: Colors.grey),
                 ),
               ),
               SizedBox(height: 20),
@@ -249,7 +251,7 @@ class _UserSinglePageState extends State<UserSinglePage> {
                   child: Center(
                     child: Text(
                       'Submit',
-                      style: GoogleFonts.roboto(color: Colors.white),
+                      style: GoogleFonts.inter(color: Colors.white),
                     ),
                   ),
                 ),
@@ -308,7 +310,7 @@ class _UserSinglePageState extends State<UserSinglePage> {
         ),
         title: Text(
           member.toString() ?? 'Loading...',
-          style: GoogleFonts.roboto(
+          style: GoogleFonts.inter(
             fontWeight: FontWeight.bold,
 
             fontSize: MediaQuery.of(context).size.width * 0.05,
@@ -327,9 +329,9 @@ class _UserSinglePageState extends State<UserSinglePage> {
               leading: Image.asset(ImageConstants.whatsapp,color: Colors.grey,height: 20,width: 20,),
               title: Text(
                 whatsappNo==""?phno:whatsappNo,
-                style: GoogleFonts.roboto(),
+                style: GoogleFonts.inter(),
               ),
-              subtitle: Text('WhatsApp',style: GoogleFonts.roboto(color: Colors.grey),),
+              subtitle: Text('WhatsApp',style: GoogleFonts.inter(color: Colors.grey),),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {
@@ -346,9 +348,9 @@ class _UserSinglePageState extends State<UserSinglePage> {
               leading: Icon(Icons.facebook,color: Colors.grey),
               title: Text(
                 facebookId==""?'--':facebookId,
-                style: GoogleFonts.roboto(),
+                style: GoogleFonts.inter(),
               ),
-              subtitle: Text('Facebook',style: GoogleFonts.roboto(color: Colors.grey),),
+              subtitle: Text('Facebook',style: GoogleFonts.inter(color: Colors.grey),),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {
@@ -366,9 +368,9 @@ class _UserSinglePageState extends State<UserSinglePage> {
               leading: Icon(Icons.email,color: Colors.grey),
               title: Text(
                 emailId==""?'--':emailId,
-                style: GoogleFonts.roboto(),
+                style: GoogleFonts.inter(),
               ),
-              subtitle: Text('Email',style: GoogleFonts.roboto(color: Colors.grey),),
+              subtitle: Text('Email',style: GoogleFonts.inter(color: Colors.grey),),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {
@@ -386,9 +388,9 @@ class _UserSinglePageState extends State<UserSinglePage> {
               leading: Image.asset(ImageConstants.twitter,width: 20,height: 20,color: Colors.grey,),
               title: Text(
                 twitterId==""?'--':twitterId,
-                style: GoogleFonts.roboto(),
+                style: GoogleFonts.inter(),
               ),
-              subtitle: Text('Twitter',style: GoogleFonts.roboto(color: Colors.grey),),
+              subtitle: Text('Twitter',style: GoogleFonts.inter(color: Colors.grey),),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {
@@ -405,9 +407,9 @@ class _UserSinglePageState extends State<UserSinglePage> {
               leading: Image.asset(ImageConstants.linkedinIcon,color: Colors.grey,height: 20,width: 20,),
               title: Text(
                 LinkdnId==""?'--':LinkdnId,
-                style: GoogleFonts.roboto(),
+                style: GoogleFonts.inter(),
               ),
-              subtitle: Text('Linkedin',style: GoogleFonts.roboto(color: Colors.grey),),
+              subtitle: Text('Linkedin',style: GoogleFonts.inter(color: Colors.grey),),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {
@@ -425,9 +427,9 @@ class _UserSinglePageState extends State<UserSinglePage> {
               leading: Image.asset(ImageConstants.instaIcon,color: Colors.grey,height: 20,width: 20,),
               title: Text(
                 instaId==""?'--':instaId,
-                style: GoogleFonts.roboto(),
+                style: GoogleFonts.inter(),
               ),
-              subtitle: Text('Instagram',style: GoogleFonts.roboto(color: Colors.grey),),
+              subtitle: Text('Instagram',style: GoogleFonts.inter(color: Colors.grey),),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {
@@ -445,9 +447,9 @@ class _UserSinglePageState extends State<UserSinglePage> {
               leading:Icon(Icons.language,color: Colors.grey),
               title: Text(
                 website==""?'--':website,
-                style: GoogleFonts.roboto(),
+                style: GoogleFonts.inter(),
               ),
-              subtitle: Text('Website',style: GoogleFonts.roboto(color: Colors.grey),),
+              subtitle: Text('Website',style: GoogleFonts.inter(color: Colors.grey),),
               trailing: IconButton(
                 icon: Icon(Icons.edit, color: Colors.grey),
                 onPressed: () {

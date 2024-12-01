@@ -9,7 +9,9 @@ import 'package:qctt/features/group/controller/group_controller.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants/images/images.dart';
+import '../../../main.dart';
 import '../../../models/member_model.dart';
+import '../../Home/screens/routing_page.dart';
 import '../../Home/screens/splash_screen.dart';
 import 'add_member_page.dart';
 

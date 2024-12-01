@@ -12,6 +12,8 @@ class ImageConstants{
   static const twitter ='assets/images/twitter.png';
   static const linkedin2 ='assets/images/linkedin2.png';
   static const facebook ='assets/images/facebook.png';
+  static const pageview1 ='assets/images/pageview1.jpeg';
+  static const pageview2 ='assets/images/pageview2.jpeg';
 
 
 }

@@ -15,7 +15,9 @@ import 'package:qctt/models/group_model.dart';
 import 'package:qctt/models/member_model.dart';
 
 import '../../../core/utils/utils.dart';
+import '../../../main.dart';
 import '../../Home/screens/navigation_page.dart';
+import '../../Home/screens/routing_page.dart';
 import '../controller/group_controller.dart';
 import 'add_member_page.dart';
 
@@ -34,9 +36,52 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
   String downloadUrl="";
    List addedMembers=[];
   List<MemberModel> memberList=[];
-  Future<void> _pickGroupImage() async {
+  Future<void> _showImageSourceActionSheet(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          title: Text(
+            'Select the image source',
+            style: GoogleFonts.inter(
+              color: Colors.black,
+              fontSize: width*0.05,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _pickGroupImage(ImageSource.camera);// Return false
+              },
+              child: Text(
+                "Camera",
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _pickGroupImage(ImageSource.gallery);// Return true
+              },
+              child: Text(
+                "Gallery",
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  Future<void> _pickGroupImage(ImageSource source) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(source: source);
 
     if (pickedFile != null) {
       setState(() {
@@ -55,7 +100,7 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
         // Get the download URL
         downloadUrl = await storageRef.getDownloadURL();
 
-        // Save the download URL to Firestore
+        // Save the download URL to Firestore (if needed)
         // await FirebaseFirestore.instance.collection('groups').add({
         //   'imageUrl': downloadUrl,
         //   'createdAt': FieldValue.serverTimestamp(),
@@ -67,6 +112,40 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
       }
     }
   }
+  // Future<void> _pickGroupImage() async {
+  //   final picker = ImagePicker();
+  //   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  //
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       _groupImagePath = pickedFile.path;
+  //       _image = File(pickedFile.path);
+  //       _imageName = basename(pickedFile.path);
+  //     });
+  //
+  //     try {
+  //       // Upload image to Firebase Storage
+  //       String fileName = "group_images/$_imageName";
+  //       Reference storageRef = FirebaseStorage.instance.ref(fileName);
+  //
+  //       await storageRef.putFile(_image!);
+  //
+  //       // Get the download URL
+  //       downloadUrl = await storageRef.getDownloadURL();
+  //
+  //       // Save the download URL to Firestore
+  //       // await FirebaseFirestore.instance.collection('groups').add({
+  //       //   'imageUrl': downloadUrl,
+  //       //   'createdAt': FieldValue.serverTimestamp(),
+  //       // });
+  //
+  //       print('Image uploaded and URL saved: $downloadUrl');
+  //     } catch (e) {
+  //       print('Failed to upload image: $e');
+  //     }
+  //   }
+  // }
+
 // Path for the group image
 
   // Future<void> _pickGroupImage() async {
@@ -227,7 +306,9 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
                             size: width*0.185,
                           ),
                           onPressed: () {
-                            _pickGroupImage();
+                            _showImageSourceActionSheet(context); // Pass the BuildContext
+
+                            // _pickGroupImage();
                             // Handle image icon action
                           },
                         ),
@@ -244,7 +325,8 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
                       children: [
                         InkWell(
                           onTap: () {
-                            _pickGroupImage();
+                            _showImageSourceActionSheet(context); // Pass the BuildContext
+                            // _pickGroupImage();
                             // Handle image icon action
                           },
                           child: Container(
@@ -255,8 +337,9 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
                         SizedBox(height: width*0.01),
 
                         Text(
-                          _imageName.toString(),
-                          style: GoogleFonts.inter(fontSize: width*0.02,),
+                          // _imageName.toString(),
+                          'select image',
+                          style: GoogleFonts.inter(fontSize: width*0.02,), overflow: TextOverflow.ellipsis
                         ),
                       ],
                     ),

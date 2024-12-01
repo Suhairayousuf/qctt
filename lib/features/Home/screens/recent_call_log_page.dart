@@ -3,11 +3,13 @@ import 'package:call_log/call_log.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:qctt/features/Home/screens/routing_page.dart';
 import 'package:qctt/features/Home/screens/splash_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants/images/images.dart';
 import '../../../core/pallette/pallete.dart';
+import '../../../main.dart';
 import 'navigation_page.dart';
 
 class CallLogPage extends StatefulWidget {
@@ -100,7 +102,7 @@ class _CallLogPageState extends State<CallLogPage> {
                             crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
                             children: [
                               contact.name!= null  && contact.name!=" "?
-                              Text(contact.name.toString(),style: GoogleFonts.roboto(color: Colors.black,fontSize:  width*0.036,fontWeight: FontWeight.w500),):Text(" "),
+                              Text(contact.name.toString(),style: GoogleFonts.inter(color: Colors.black,fontSize:  width*0.036,fontWeight: FontWeight.w500),):Text(" "),
                               Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [

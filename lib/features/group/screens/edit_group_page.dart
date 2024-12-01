@@ -16,7 +16,9 @@ import 'package:qctt/models/group_model.dart';
 import 'package:qctt/models/member_model.dart';
 
 import '../../../core/utils/utils.dart';
+import '../../../main.dart';
 import '../../Home/screens/navigation_page.dart';
+import '../../Home/screens/routing_page.dart';
 import '../controller/group_controller.dart';
 import 'add_member_page.dart';
 import 'addmember_from_group.dart';
@@ -42,9 +44,52 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
   String downloadUrl="";
   List addedMembers=[];
   List<MemberModel> memberList=[];
-  Future<void> _pickGroupImage() async {
+  Future<void> _showImageSourceActionSheet(BuildContext context) async {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12.0),
+          ),
+          title: Text(
+            'Select the image source',
+            style: GoogleFonts.inter(
+              color: Colors.black,
+              fontSize: width*0.05,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _pickGroupImage(ImageSource.camera);// Return false
+              },
+              child: Text(
+                "Camera",
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                _pickGroupImage(ImageSource.gallery);// Return true
+              },
+              child: Text(
+                "Gallery",
+                style: TextStyle(color: Colors.black),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+  Future<void> _pickGroupImage(ImageSource source) async {
     final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await picker.pickImage(source: source);
 
     if (pickedFile != null) {
       setState(() {
@@ -63,7 +108,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
         // Get the download URL
         downloadUrl = await storageRef.getDownloadURL();
 
-        // Save the download URL to Firestore
+        // Save the download URL to Firestore (if needed)
         // await FirebaseFirestore.instance.collection('groups').add({
         //   'imageUrl': downloadUrl,
         //   'createdAt': FieldValue.serverTimestamp(),
@@ -75,21 +120,40 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
       }
     }
   }
-// Path for the group image
-
   // Future<void> _pickGroupImage() async {
   //   final picker = ImagePicker();
   //   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+  //
   //   if (pickedFile != null) {
   //     setState(() {
   //       _groupImagePath = pickedFile.path;
   //       _image = File(pickedFile.path);
   //       _imageName = basename(pickedFile.path);
-  //
-  //       // Path to display in UI
   //     });
+  //
+  //     try {
+  //       // Upload image to Firebase Storage
+  //       String fileName = "group_images/$_imageName";
+  //       Reference storageRef = FirebaseStorage.instance.ref(fileName);
+  //
+  //       await storageRef.putFile(_image!);
+  //
+  //       // Get the download URL
+  //       downloadUrl = await storageRef.getDownloadURL();
+  //
+  //       // Save the download URL to Firestore
+  //       // await FirebaseFirestore.instance.collection('groups').add({
+  //       //   'imageUrl': downloadUrl,
+  //       //   'createdAt': FieldValue.serverTimestamp(),
+  //       // });
+  //
+  //       print('Image uploaded and URL saved: $downloadUrl');
+  //     } catch (e) {
+  //       print('Failed to upload image: $e');
+  //     }
   //   }
   // }
+
   final cardTitle = TextEditingController();
   Color selectedColor = Colors.blueGrey;
   UpdateGroup(BuildContext context, GroupModel groupData, List<MemberModel> memberList){
@@ -104,6 +168,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
     selectedColor = widget.color=="" ?Colors.blueGrey:Color(int.parse("0x" + widget.color.replaceAll("#", ""))); // Set color
     downloadUrl = widget.image; // Set image URL
     memberList = widget.memberList; // Set image URL
+    hexColor = '#${selectedColor.value.toRadixString(16).padLeft(8, '0')}';
      // Prepopulate members
 
     // TODO: implement initState
@@ -161,7 +226,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
             padding:  EdgeInsets.only(left: width*0.045,right: width*0.045),
             child: Text(
               'Edit Card',
-              style: GoogleFonts.roboto(fontSize: width*0.05,fontWeight: FontWeight.w500),
+              style: GoogleFonts.inter(fontSize: width*0.05,fontWeight: FontWeight.w500),
             ),
           ),
           actions: [
@@ -288,7 +353,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
                             size: width*0.185,
                           ),
                           onPressed: () {
-                            _pickGroupImage();
+                            _showImageSourceActionSheet(context);
                             // Handle image icon action
                           },
                         ),
@@ -305,7 +370,8 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
                       children: [
                         InkWell(
                           onTap: () {
-                            _pickGroupImage();
+                            _showImageSourceActionSheet(context);
+                            // _pickGroupImage();
                             // Handle image icon action
                           },
                           child: Container(
@@ -316,7 +382,8 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
                         SizedBox(height: width*0.01),
 
                         Text(
-                          _imageName.toString(),
+                          'Select image',
+                          // _imageName.toString(),
                           style: GoogleFonts.inter(fontSize: width*0.02,),
                         ),
                       ],
@@ -421,18 +488,30 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
                           subtitle ?? "",
                           style: GoogleFonts.inter(fontSize: 12, color: Colors.grey),
                         ),
-                        trailing: GestureDetector(
+                        trailing:GestureDetector(
                           onTap: () {
-                            // Remove logic
                             setState(() {
                               if (isExistingMember) {
-                                widget.memberList.removeAt(index);
-                                FirebaseFirestore.instance.
-                                collection(FirebaseConstants.groups).
-                                doc(widget.groupId).collection(FirebaseConstants.members).
-                                doc( widget.memberList[index].memberId).delete();
+                                if (index >= 0 && index < widget.memberList.length) {
+                                  // Ensure index is valid before removing
+                                  FirebaseFirestore.instance
+                                      .collection(FirebaseConstants.groups)
+                                      .doc(widget.groupId)
+                                      .collection(FirebaseConstants.members)
+                                      .doc(widget.memberList[index].memberId)
+                                      .delete();
+                                  widget.memberList.removeAt(index);
+                                } else {
+                                  print('Invalid index for memberList: $index');
+                                }
                               } else {
-                                addedMembers.removeAt(index - widget.memberList.length);
+                                int addedMembersIndex = index - widget.memberList.length;
+                                if (addedMembersIndex >= 0 && addedMembersIndex < addedMembers.length) {
+                                  // Ensure index is valid for addedMembers
+                                  addedMembers.removeAt(addedMembersIndex);
+                                } else {
+                                  print('Invalid index for addedMembers: $addedMembersIndex');
+                                }
                               }
                             });
                           },
@@ -442,6 +521,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
                             size: 20,
                           ),
                         ),
+
                       ),
                     );
                   },
@@ -540,7 +620,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
                icon: CircleAvatar(
                 radius: 16,
                 backgroundColor:primaryColor,child: Icon(Icons.check,color: Colors.white,)),
-            label: Text('Done',style: GoogleFonts.roboto(color: Colors.black,fontSize: 20),),
+            label: Text('Done',style: GoogleFonts.inter(color: Colors.black,fontSize: 20),),
             ),
           ),
         ),

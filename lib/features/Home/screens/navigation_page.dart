@@ -395,36 +395,41 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
   Widget build(BuildContext context) {
 
     return Scaffold(
-      backgroundColor: primaryColor2,
+      backgroundColor: Colors.white,
 
       body: Center(
         child: _widgetOptions.elementAt(_selectedIndex),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor:  Colors.grey.withOpacity(0.2),
-        // backgroundColor: primaryColor2,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.call),
-            label: 'Call',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.contacts),
-            label: 'Contacts',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.credit_card),
-            label: 'Card',
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: primaryColor,
-        unselectedItemColor: Colors.grey.shade800,
-        onTap: _onItemTapped,
+      bottomNavigationBar: Container(
+        color: Colors.white,
+        child: BottomNavigationBar(
+          // backgroundColor:  Colors.grey.withOpacity(0.2),
+          backgroundColor:  Colors.white,
+          // backgroundColor: primaryColor2,
+          items: const <BottomNavigationBarItem>[
+
+            BottomNavigationBarItem(
+              icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.call),
+              label: 'Call',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.contacts),
+              label: 'Contacts',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.credit_card),
+              label: 'Card',
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: primaryColor,
+          unselectedItemColor: Colors.grey.shade800,
+          onTap: _onItemTapped,
+        ),
       ),
     );
   }

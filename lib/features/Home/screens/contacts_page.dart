@@ -2,12 +2,14 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:qctt/features/Home/screens/routing_page.dart';
 import 'package:qctt/features/Home/screens/splash_screen.dart';
 import 'package:qctt/features/Home/screens/sqflite.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants/images/images.dart';
 import '../../../core/pallette/pallete.dart';
+import '../../../main.dart';
 import '../../group/screens/group_detailes_page.dart';
 import 'navigation_page.dart';
 class ContactsPage extends StatefulWidget {
@@ -128,7 +130,7 @@ class _ContactsPageState extends State<ContactsPage> {
           backgroundColor: Colors.white,
 
           automaticallyImplyLeading: false,
-          title: Text('Contacts',style: GoogleFonts.roboto(fontSize: width*0.05),),
+          title: Text('Contacts',style: GoogleFonts.inter(fontSize: width*0.05),),
         ),
         body:
         totalContactsSearch.isEmpty?Center(child: CircularProgressIndicator()):

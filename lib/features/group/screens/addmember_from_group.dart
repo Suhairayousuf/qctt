@@ -375,6 +375,8 @@ import 'package:qctt/features/Home/screens/sqflite.dart';
 import 'package:qctt/models/member_model.dart';
 
 import '../../../core/pallette/pallete.dart';
+import '../../../main.dart';
+import '../../Home/screens/routing_page.dart';
 import '../../Home/screens/splash_screen.dart';
 
 class AddMemberFromEditPage extends StatefulWidget {
@@ -601,7 +603,7 @@ class _AddMemberFromEditPageState extends State<AddMemberFromEditPage> {
           backgroundColor: Colors.white,
           title: Text(
             'Add Member',
-            style: GoogleFonts.roboto(fontSize: 20),
+            style: GoogleFonts.inter(fontSize: 20),
           ),
         ),
         body: Column(
@@ -748,7 +750,7 @@ class _AddMemberFromEditPageState extends State<AddMemberFromEditPage> {
               icon: CircleAvatar(
                   radius: 16,
                   backgroundColor:Colors.white,child: Icon(Icons.check)),
-              label: Text('Add',style: GoogleFonts.roboto(color: Colors.white),),
+              label: Text('Add',style: GoogleFonts.inter(color: Colors.white),),
             ),
           ),
         ):Padding(
@@ -765,7 +767,7 @@ class _AddMemberFromEditPageState extends State<AddMemberFromEditPage> {
               icon: CircleAvatar(
                   radius: 16,
                   backgroundColor:Colors.white,child: Icon(Icons.check)),
-              label: Text('Add',style: GoogleFonts.roboto(color: Colors.white),),
+              label: Text('Add',style: GoogleFonts.inter(color: Colors.white),),
             ),
           ),
         ):Container()

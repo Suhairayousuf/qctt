@@ -114,7 +114,7 @@ class AddCardDetailsPage extends StatelessWidget {
 
         controller: controller,
         decoration: InputDecoration(
-          hintStyle:GoogleFonts.roboto(color: Colors.blue) ,
+          hintStyle:GoogleFonts.inter(color: Colors.blue) ,
 
           labelText: label,
 

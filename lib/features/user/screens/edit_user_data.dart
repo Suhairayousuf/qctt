@@ -3,6 +3,8 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:qctt/core/pallette/pallete.dart';
 
 import '../../../core/utils/utils.dart';
+import '../../../main.dart';
+import '../../Home/screens/routing_page.dart';
 import '../../Home/screens/splash_screen.dart';
 
 class EditUserDetails extends StatefulWidget {

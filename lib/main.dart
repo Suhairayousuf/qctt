@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'features/Home/screens/contacts_page.dart';
+import 'features/Home/screens/routing_page.dart';
 import 'features/card/screens/add_card_page.dart';
 import 'features/card/screens/card_page.dart';
 import 'features/group/screens/add_group_page.dart';
@@ -16,7 +17,8 @@ import 'features/group/screens/group_detailes_page.dart';
 import 'features/user/screens/edit_user_data.dart';
 import 'features/user/screens/user_single_page.dart';
 import 'firebase_options.dart';
-
+ var height;
+ var width;
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeFirebase();
@@ -43,8 +45,9 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Named Routes ',
-      initialRoute: '/SplashScreenWidget', // The initial route when the app starts
+      initialRoute: '/RoutingPage', // The initial route when the app starts
       routes: {
+         '/RoutingPage': (context) => RoutingPage(),
         '/SplashScreenWidget': (context) => SplashScreenWidget(),
         '/NavigationBarPage': (context) => NavigationBarPage(),
         '/HomePage': (context) => HomePage(),
