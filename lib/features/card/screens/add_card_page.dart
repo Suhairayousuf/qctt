@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart';
+import 'package:qctt/core/pallette/pallete.dart';
 
 import '../../../core/utils/utils.dart';
 
@@ -90,7 +91,7 @@ class AddCardDetailsPage extends StatelessWidget {
                     ),
                     child: Text(
                       'Submit',
-                      style: TextStyle(color: Colors.white),
+                      style: GoogleFonts.inter(color: Colors.white),
                     ),
                   ),
 
@@ -165,21 +166,21 @@ class AddCardDetailsPage extends StatelessWidget {
       context: context,
       builder: (BuildContext dialogContext) {
         return AlertDialog(
-          title: Text('Confirm Submission'),
+          title: Text('Confirm Submission',style: GoogleFonts.inter(color: primaryColor),),
           content: Text('Are you sure you want to submit the details?'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop(); // Close dialog
               },
-              child: Text('Cancel'),
+              child: Text('Cancel',style: GoogleFonts.inter(color: Colors.grey),),
             ),
             TextButton(
               onPressed: () async {
                 Navigator.of(dialogContext).pop(); // Close dialog
                 await submitToFirebase();
                 ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('New card  created')),
+                  SnackBar(content: Text('New card  created',)),
 
                 );
                 nameController.clear();
@@ -192,7 +193,7 @@ class AddCardDetailsPage extends StatelessWidget {
                 linkedInController.clear();
                 Navigator.pop(context);
               },
-              child: Text('Submit'),
+              child: Text('Submit',style: GoogleFonts.inter(color: primaryColor),),
             ),
           ],
         );

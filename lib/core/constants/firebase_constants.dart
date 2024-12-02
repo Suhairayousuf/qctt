@@ -3,5 +3,6 @@ class FirebaseConstants {
   static const groups = 'groups';
   static const branch = 'branch';
   static const members = 'members';
+  static const cards = 'cards';
 
 }

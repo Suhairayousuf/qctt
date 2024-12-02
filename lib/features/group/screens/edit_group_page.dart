@@ -648,6 +648,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
                   .delete();
               // Perform delete action here
               Navigator.of(context).pop();
+              Navigator.of(context).pop();
               // Add logic to delete the card
               showUploadMessage(context, 'Card deleted successfully');
             },

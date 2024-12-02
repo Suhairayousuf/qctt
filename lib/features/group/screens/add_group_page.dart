@@ -171,21 +171,9 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
   }
   @override
   Widget build(BuildContext context) {
-    log(';;;;;;;;;;;;');
-    log(hexColor);
+
     return
-      // WillPopScope(
-    //     onWillPop: () async {
-    //   Navigator.pushAndRemoveUntil(
-    //     context,
-    //     MaterialPageRoute(
-    //       builder: (context) => NavigationBarPage(initialIndex: 0),
-    //     ),
-    //         (route) => false,
-    //   );
-    //   return false; // Returning false ensures the current page will not pop.
-    // },
-    //   child:
+
       Scaffold(
          backgroundColor: Colors.white,
         appBar: AppBar(
@@ -201,12 +189,7 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
           shadowColor: Colors.grey,
            backgroundColor: Colors.white,
           automaticallyImplyLeading: false,
-          // leading: IconButton(
-          //   icon: Icon(Icons.arrow_back_ios,size: width*0.045,),
-          //   onPressed: () {
-          //     Navigator.pop(context); // Goes back to the previous screen
-          //   },
-          // ),
+
           title: Padding(
             padding:  EdgeInsets.only(left: width*0.045,right: width*0.045),
             child: Text(
@@ -295,7 +278,7 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
                       ),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  SizedBox(width: width*0.04),
                   _image==null?Padding(
                     padding:  EdgeInsets.only(top: width*0.028,),
                     child: Column(
