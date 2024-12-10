@@ -1,9 +1,9 @@
 
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qctt/models/group_model.dart';
-import 'package:qctt/models/member_model.dart';
 
+import '../../../models/group_model.dart';
+import '../../../models/member_model.dart';
 import '../repository/group_repository.dart';
 
 

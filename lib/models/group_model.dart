@@ -61,7 +61,7 @@ class GroupModel {
     "groupId": groupId,
     "date": date,
     "color": color,
-    "image": image,
+    "image": image.toString(),
     "delete": delete,
     "membersCount": membersCount,
   };

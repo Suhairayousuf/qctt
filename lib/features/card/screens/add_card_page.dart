@@ -3,9 +3,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path/path.dart';
-import 'package:qctt/core/pallette/pallete.dart';
 
+import '../../../core/pallette/pallete.dart';
 import '../../../core/utils/utils.dart';
+import '../../../models/card_model.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -132,35 +133,33 @@ class AddCardDetailsPage extends StatelessWidget {
   }
 
   Future<void> submitToFirebase() async {
+    // Create a CardModel instance from the text controllers
+    CardModel card = CardModel(
+      name: nameController.text ?? "",
+      phone: phoneController.text ?? "",
+      designation: designationController.text ?? "",
+      website: websiteController.text ?? "",
+      email: emailController.text ?? "",
+      whatsapp: whatsappController.text ?? "",
+      facebook: facebookController.text ?? "",
+      twitter: twitterController.text ?? "",
+      linkedin: linkedInController.text ?? "",
+      createdDate: DateTime.now(),
+      cardId: '',
+      delete: false,
+    );
+
     // Reference to Firestore collection
     final CollectionReference cardsCollection =
     FirebaseFirestore.instance.collection('cards');
 
-    // Data to save
-    Map<String, dynamic> cardData = {
-      'name': nameController.text,
-      'phone': phoneController.text,
-      'designation': designationController.text,
-      'website': websiteController.text,
-      'email': emailController.text,
-      'whatsapp': whatsappController.text,
-      'facebook': facebookController.text,
-      'twitter': twitterController.text,
-      'linkedin': linkedInController.text,
-      'createdDate': DateTime.now(),
-      'delete':false
-    };
-
-    // Add data to Firestore
-    await cardsCollection.add(cardData).then((onValue){
-      onValue.update({
-        'cardId':onValue.id
-      });
+    // Add card data to Firestore
+    await cardsCollection.add(card.toJson()).then((onValue) {
+      // Update the card with its generated Firestore ID
+      onValue.update({'cardId': onValue.id});
     });
-
-
-
   }
+
   void _showSubmitDialog(BuildContext context) {
     showDialog(
       context: context,

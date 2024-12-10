@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:qctt/models/card_model.dart';
 
+import '../../../models/card_model.dart';
 import '../repository/card_repository.dart';
 
 final cardControllerProvider = StateNotifierProvider((ref) {

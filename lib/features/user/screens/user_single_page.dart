@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:qctt/core/constants/images/images.dart';
 
+import '../../../core/constants/images/images.dart';
 import '../../../main.dart';
 import '../../../models/member_model.dart';
 import '../../Home/screens/routing_page.dart';

@@ -3,8 +3,7 @@ import 'package:call_log/call_log.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:qctt/features/Home/screens/routing_page.dart';
-import 'package:qctt/features/Home/screens/splash_screen.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants/images/images.dart';

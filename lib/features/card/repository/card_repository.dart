@@ -2,12 +2,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:qctt/models/card_model.dart';
-import 'package:qctt/models/group_model.dart';
+
 
 import '../../../core/constants/firebase_constants.dart';
 import '../../../core/failure.dart';
 import '../../../core/providers/firebase_providers.dart';
+import '../../../models/card_model.dart';
 import '../../../models/member_model.dart';
 
 final cardRepositoryProvider = Provider((ref) => CardRepository(firestore: ref.watch(firestoreProvider),

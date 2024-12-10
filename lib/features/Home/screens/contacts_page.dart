@@ -1,10 +1,9 @@
+import 'package:QCTT/features/Home/screens/sqflite.dart';
 import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:qctt/features/Home/screens/routing_page.dart';
-import 'package:qctt/features/Home/screens/splash_screen.dart';
-import 'package:qctt/features/Home/screens/sqflite.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants/images/images.dart';

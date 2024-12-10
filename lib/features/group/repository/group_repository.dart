@@ -2,11 +2,11 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:fpdart/fpdart.dart';
-import 'package:qctt/models/group_model.dart';
 
 import '../../../core/constants/firebase_constants.dart';
 import '../../../core/failure.dart';
 import '../../../core/providers/firebase_providers.dart';
+import '../../../models/group_model.dart';
 import '../../../models/member_model.dart';
 
 final groupRepositoryProvider = Provider((ref) => GroupRepository(firestore: ref.watch(firestoreProvider),
@@ -126,9 +126,10 @@ class GroupRepository{
       debugPrint('FirebaseException: ${e.message}');
     } catch (e) {
       // Handle other exceptions
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('An error occurred: $e')),
-      );
+      // ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('An error occurred: $e')
+        );
+       // );
       debugPrint('Exception: $e');
     }
   }

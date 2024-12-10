@@ -63,10 +63,10 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:qctt/core/constants/images/images.dart';
-import 'package:qctt/features/Home/screens/routing_page.dart';
+
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../core/constants/images/images.dart';
 import '../../../core/pallette/pallete.dart';
 import '../../../main.dart';
 import 'navigation_page.dart';

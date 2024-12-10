@@ -1,18 +1,18 @@
 import 'dart:math';
 
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:qctt/core/pallette/pallete.dart';
-import 'package:qctt/features/Home/screens/routing_page.dart';
-import 'package:qctt/features/Home/screens/splash_screen.dart';
-import 'package:qctt/features/group/controller/group_controller.dart';
+
 import 'package:upgrader/upgrader.dart';
 
+import '../../../core/pallette/pallete.dart';
 import '../../../core/utils/utils.dart';
 import '../../../main.dart';
 import '../../../models/member_model.dart';
+import '../../group/controller/group_controller.dart';
 import '../../group/screens/add_group_page.dart';
 import '../../group/screens/add_member_page.dart';
 import '../../group/screens/edit_group_page.dart';
@@ -128,12 +128,18 @@ class _HomePageState extends ConsumerState<HomePage> {
                                     child: Card(
                                       child: Container(
                                         decoration: BoxDecoration(
+                                          image: group.image != null && group.image!.isNotEmpty
+                                              ? DecorationImage(
+                                            image: CachedNetworkImageProvider(group.image.toString()),
+                                            fit: BoxFit.cover,
+                                          )
+                                              : null, // If no image, set the image decoration to null
                                           color: group.color.isEmpty
                                               ? Colors.blueGrey
-                                              : Color(
-                                              int.parse("0x" + group.color.replaceAll("#", ""))),
+                                              : Color(int.parse("0x" + group.color.replaceAll("#", ""))),
                                           borderRadius: BorderRadius.circular(12),
                                         ),
+
                                         child: Stack(
                                           children: [
                                             // Delete icon in the top-left corner

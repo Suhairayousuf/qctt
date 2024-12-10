@@ -3,15 +3,16 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:qctt/core/constants/firebase_constants.dart';
-import 'package:qctt/core/utils/utils.dart';
-import 'package:qctt/features/Home/screens/sqflite.dart';
-import 'package:qctt/models/member_model.dart';
 
+
+import '../../../core/constants/firebase_constants.dart';
 import '../../../core/pallette/pallete.dart';
+import '../../../core/utils/utils.dart';
 import '../../../main.dart';
+import '../../../models/member_model.dart';
 import '../../Home/screens/routing_page.dart';
 import '../../Home/screens/splash_screen.dart';
+import '../../Home/screens/sqflite.dart';
 
 class AddMemberPage extends StatefulWidget {
   final bool type;
@@ -29,7 +30,8 @@ class _AddMemberPageState extends State<AddMemberPage> {
   List<Contact> _contacts = [];
   List<Contact> selectedContacts = [];
   Set<String> addedPhoneNumbers = {};
-  bool exist=false;// To store selected contacts
+  bool exist=false;//
+  bool click =false;// To store selected contacts
 
   Future<bool> requestContactPermission() async {
     var status = await Permission.contacts.status;
@@ -168,23 +170,29 @@ class _AddMemberPageState extends State<AddMemberPage> {
   }
 
   void saveAndReturn() {
-    // Save selectedContacts to memberList or database
+    if (click) return; // Prevent multiple clicks
+    setState(() {
+      click = true;
+    });
+
     Navigator.pop(context, selectedContacts);
   }
-  void addMember() {
-    // Prepare a list to hold MemberModel instances
+
+  void addMember() async {
+    if (click) return; // Prevent multiple clicks
+    setState(() {
+      click = true; // Disable button
+    });
+
     List<MemberModel> memberList = [];
-
-    // Convert selectedContacts to MemberModel instances
     if (selectedContacts.isNotEmpty) {
-
       memberList = selectedContacts.map((member) {
         return MemberModel(
           memberName: member.displayName ?? "",
           phone: member.phones != null && member.phones!.isNotEmpty
               ? member.phones!.first.value ?? ""
               : "",
-          memberId: '', // Firestore will generate an ID
+          memberId: '', // Will be updated later
           date: DateTime.now(),
           delete: false,
           email: "",
@@ -194,33 +202,31 @@ class _AddMemberPageState extends State<AddMemberPage> {
           website: "",
           whatsapp: "",
           instagram: "",
-          // Add image or other fields if necessary
         );
       }).toList();
     }
 
-    // Save each member in Firestore
-    // List numberList=[];
-    // for(var abc in selectedContacts){
-    //   numberList.add(abc.phones);
-    //
-    // }
     final groupRef = FirebaseFirestore.instance
         .collection(FirebaseConstants.groups)
         .doc(widget.groupId)
         .collection(FirebaseConstants.members);
 
     for (var member in memberList) {
-      groupRef.add(member.toJson()); // Convert MemberModel to JSON and save to Firestore
+      final docRef = await groupRef.add(member.toJson());
+      await docRef.update({'memberId': docRef.id});
     }
-    if(mounted){
-      setState(() {
 
+    if (mounted) {
+      setState(() {
+        click = false; // Re-enable the button
       });
     }
+
     showSnackBar(context, 'Member added successfully');
     Navigator.pop(context);
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -370,41 +376,32 @@ class _AddMemberPageState extends State<AddMemberPage> {
 
           ],
         ),
-        floatingActionButton:selectedContacts.isNotEmpty? widget.type==false?Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: SizedBox(
-            height: width*0.12,
-            width: width*0.25,
-            child: FloatingActionButton.extended(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              onPressed: saveAndReturn,
-              backgroundColor: primaryColor,
-              icon: CircleAvatar(
-                  radius: 16,
-                  backgroundColor:Colors.white,child: Icon(Icons.check)),
-              label: Text('Add',style: GoogleFonts.inter(color: Colors.white),),
+      floatingActionButton: selectedContacts.isNotEmpty && !click
+          ? Padding(
+        padding: const EdgeInsets.all(20.0),
+        child: SizedBox(
+          height: width * 0.12,
+          width: width * 0.25,
+          child: FloatingActionButton.extended(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(30),
+            ),
+            onPressed: widget.type == false ? saveAndReturn : addMember,
+            backgroundColor: primaryColor,
+            icon: CircleAvatar(
+              radius: 16,
+              backgroundColor: Colors.white,
+              child: Icon(Icons.check),
+            ),
+            label: Text(
+              'Add',
+              style: GoogleFonts.inter(color: Colors.white),
             ),
           ),
-        ):Padding(
-          padding: const EdgeInsets.all(20.0),
-          child: SizedBox(
-            height: width*0.12,
-            width: width*0.25,
-            child: FloatingActionButton.extended(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(30),
-              ),
-              onPressed: addMember,
-              backgroundColor: primaryColor,
-              icon: CircleAvatar(
-                  radius: 16,
-                  backgroundColor:Colors.white,child: Icon(Icons.check)),
-              label: Text('Add',style: GoogleFonts.inter(color: Colors.white),),
-            ),
-          ),
-        ):Container()
+        ),
+      )
+          : null,
+
     );
   }
 }

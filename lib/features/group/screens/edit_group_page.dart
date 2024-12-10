@@ -9,14 +9,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
-import 'package:qctt/core/constants/firebase_constants.dart';
-import 'package:qctt/core/pallette/pallete.dart';
-import 'package:qctt/features/Home/screens/splash_screen.dart';
-import 'package:qctt/models/group_model.dart';
-import 'package:qctt/models/member_model.dart';
 
+
+import '../../../core/constants/firebase_constants.dart';
+import '../../../core/pallette/pallete.dart';
 import '../../../core/utils/utils.dart';
 import '../../../main.dart';
+import '../../../models/group_model.dart';
+import '../../../models/member_model.dart';
 import '../../Home/screens/navigation_page.dart';
 import '../../Home/screens/routing_page.dart';
 import '../controller/group_controller.dart';
@@ -44,6 +44,9 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
   String downloadUrl="";
   List addedMembers=[];
   List<MemberModel> memberList=[];
+  String updatedDownloadUrl="";
+  bool _isUploading = false;
+  bool _isImageChanged = false;
   Future<void> _showImageSourceActionSheet(BuildContext context) async {
     showDialog(
       context: context,
@@ -65,7 +68,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                _pickGroupImage(ImageSource.camera);// Return false
+                _pickGroupImage(ImageSource.camera,context);// Return false
               },
               child: Text(
                 "Camera",
@@ -75,7 +78,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
             TextButton(
               onPressed: () {
                 Navigator.pop(context);
-                _pickGroupImage(ImageSource.gallery);// Return true
+                _pickGroupImage(ImageSource.gallery,context);// Return true
               },
               child: Text(
                 "Gallery",
@@ -87,39 +90,42 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
       },
     );
   }
-  Future<void> _pickGroupImage(ImageSource source) async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: source);
-
-    if (pickedFile != null) {
-      setState(() {
-        _groupImagePath = pickedFile.path;
-        _image = File(pickedFile.path);
-        _imageName = basename(pickedFile.path);
-      });
-
-      try {
-        // Upload image to Firebase Storage
-        String fileName = "group_images/$_imageName";
-        Reference storageRef = FirebaseStorage.instance.ref(fileName);
-
-        await storageRef.putFile(_image!);
-
-        // Get the download URL
-        downloadUrl = await storageRef.getDownloadURL();
-
-        // Save the download URL to Firestore (if needed)
-        // await FirebaseFirestore.instance.collection('groups').add({
-        //   'imageUrl': downloadUrl,
-        //   'createdAt': FieldValue.serverTimestamp(),
-        // });
-
-        print('Image uploaded and URL saved: $downloadUrl');
-      } catch (e) {
-        print('Failed to upload image: $e');
-      }
-    }
-  }
+  // Future<void> _pickGroupImage(ImageSource source) async {
+  //   final picker = ImagePicker();
+  //   final pickedFile = await picker.pickImage(source: source);
+  //
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       _groupImagePath = pickedFile.path;
+  //       _image = File(pickedFile.path);
+  //       _imageName = basename(pickedFile.path);
+  //     });
+  //
+  //     try {
+  //       // Upload image to Firebase Storage
+  //       String fileName = "group_images/$_imageName";
+  //       Reference storageRef = FirebaseStorage.instance.ref(fileName);
+  //
+  //       await storageRef.putFile(_image!);
+  //
+  //       // Get the download URL
+  //       downloadUrl = await storageRef.getDownloadURL();
+  //       setState(() {
+  //
+  //       });
+  //
+  //       // Save the download URL to Firestore (if needed)
+  //       // await FirebaseFirestore.instance.collection('groups').add({
+  //       //   'imageUrl': downloadUrl,
+  //       //   'createdAt': FieldValue.serverTimestamp(),
+  //       // });
+  //
+  //       print('Image uploaded and URL saved: $downloadUrl');
+  //     } catch (e) {
+  //       print('Failed to upload image: $e');
+  //     }
+  //   }
+  // }
   // Future<void> _pickGroupImage() async {
   //   final picker = ImagePicker();
   //   final pickedFile = await picker.pickImage(source: ImageSource.gallery);
@@ -151,6 +157,89 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
   //     } catch (e) {
   //       print('Failed to upload image: $e');
   //     }
+  //   }
+  // }
+  Future<void> _pickGroupImage(ImageSource source, BuildContext context) async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: source);
+
+    if (pickedFile != null) {
+      setState(() {
+        _groupImagePath = pickedFile.path;
+        _image = File(pickedFile.path);
+        _imageName = basename(pickedFile.path);
+        _isImageChanged = true;
+      });
+
+      try {
+        // Show a loading indicator or placeholder while the image is uploading
+        setState(() {
+          _isUploading = true;  // Add this state to show uploading status
+        });
+
+        // Upload image to Firebase Storage
+        String fileName = "group_images/$_imageName";
+        Reference storageRef = FirebaseStorage.instance.ref(fileName);
+
+        // Upload the file to Firebase Storage
+        TaskSnapshot uploadTask = await storageRef.putFile(_image!);
+
+        // Get the download URL after upload completes
+        String updatedDownloadUrl = await uploadTask.ref.getDownloadURL();
+
+        setState(() {
+          downloadUrl = updatedDownloadUrl; // Update the URL in state
+          _isUploading = false;  // Set uploading to false once the upload is complete
+        });
+
+        print('Image uploaded and URL saved: $downloadUrl');
+      } catch (e) {
+        print('Failed to upload image: $e');
+        showSnackBar(context, 'Failed to upload image. Please try again.');
+        setState(() {
+          _isUploading = false;  // Ensure uploading state is reset in case of an error
+        });
+      }
+    } else {
+      print('No image selected');
+      showSnackBar(context, 'No image selected.');
+    }
+  }
+
+  // Future<void> _handleUpdateButtonClick(BuildContext context) async {
+  //   if (_isUploading) return;  // Prevent clicks if uploading is in progress
+  //
+  //   setState(() {
+  //     _isUploading = true;
+  //   });
+  //
+  //   // If the image has been changed, upload the new image
+  //   if (_isImageChanged) {
+  //     try {
+  //       String fileName = "group_images/$_imageName";
+  //       Reference storageRef = FirebaseStorage.instance.ref(fileName);
+  //
+  //       // Upload the file to Firebase Storage
+  //       TaskSnapshot uploadTask = await storageRef.putFile(_image!);
+  //
+  //       String updatedDownloadUrl = await uploadTask.ref.getDownloadURL();
+  //
+  //       setState(() {
+  //         downloadUrl = updatedDownloadUrl;  // Update the download URL if image is uploaded
+  //         _isImageChanged = false;  // Reset the image change flag
+  //       });
+  //
+  //       print('Image uploaded and URL saved: $downloadUrl');
+  //     } catch (e) {
+  //       print('Failed to upload image: $e');
+  //       showSnackBar(context, 'Failed to upload image. Please try again.');
+  //     }
+  //   } else {
+  //     // If the image has not changed, skip the upload process
+  //     print('No new image selected. Skipping upload.');
+  //     setState(() {
+  //       _isUploading = false;  // Finish the process even if no upload happened
+  //     });
   //   }
   // }
 
@@ -343,52 +432,64 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
                     ),
                   ),
                   SizedBox(width: 10),
-                  _image==null?Padding(
-                    padding:  EdgeInsets.only(top: width*0.028,),
+                  Padding(
+                    padding: EdgeInsets.only(top: width * 0.028),
                     child: Column(
                       children: [
-                        IconButton(
+                        downloadUrl.isEmpty
+                            ? _image==null? IconButton(
                           icon: Icon(
                             Icons.image,
-                            size: width*0.185,
+                            size: width * 0.185,
                           ),
-                          onPressed: () {
+                          onPressed: _isUploading
+                              ? null  // Disable while uploading
+                              : () {
                             _showImageSourceActionSheet(context);
-                            // Handle image icon action
                           },
-                        ),
-                        Text(
-                          'Select image',
-                          style: GoogleFonts.inter(fontSize: width*0.02,),
-                        ),
-
-                      ],
-                    ),
-                  ):Padding(
-                    padding:  EdgeInsets.only(top: width*0.028,),
-                    child: Column(
-                      children: [
+                        ):
                         InkWell(
-                          onTap: () {
+                          onTap: _isUploading
+                              ? null  // Disable while uploading
+                              : () {
                             _showImageSourceActionSheet(context);
-                            // _pickGroupImage();
-                            // Handle image icon action
                           },
                           child: Container(
-                              color: Colors.grey,
-                              height: width*0.14
-                              ,width: width*0.14,child: Image.file(_image!,fit: BoxFit.fill,)),
+                            color: Colors.grey,
+                            height: width * 0.14,
+                            width: width * 0.14,
+                            child:Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        )
+                            : InkWell(
+                          onTap: _isUploading
+                              ? null  // Disable while uploading
+                              : () {
+                            _showImageSourceActionSheet(context);
+                          },
+                          child: Container(
+                            color: Colors.grey,
+                            height: width * 0.14,
+                            width: width * 0.14,
+                            child: _isUploading
+                                ? Center(child: CircularProgressIndicator()) // Show loading indicator
+                                : _image != null
+                                ? Image.file(_image!, fit: BoxFit.fill)
+                                : Image.network(downloadUrl, fit: BoxFit.fill),
+                          ),
                         ),
-                        SizedBox(height: width*0.01),
-
                         Text(
                           'Select image',
-                          // _imageName.toString(),
-                          style: GoogleFonts.inter(fontSize: width*0.02,),
+                          style: GoogleFonts.inter(fontSize: width * 0.02),
                         ),
                       ],
                     ),
                   )
+
+
                 ],
               ),
               // SizedBox(height: width*0.1),
@@ -493,28 +594,41 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
                             setState(() {
                               if (isExistingMember) {
                                 if (index >= 0 && index < widget.memberList.length) {
-                                  // Ensure index is valid before removing
-                                  FirebaseFirestore.instance
-                                      .collection(FirebaseConstants.groups)
-                                      .doc(widget.groupId)
-                                      .collection(FirebaseConstants.members)
-                                      .doc(widget.memberList[index].memberId)
-                                      .delete();
-                                  widget.memberList.removeAt(index);
+                                  final memberId = widget.memberList[index].memberId;
+
+                                  if (memberId != null && memberId.isNotEmpty) {
+                                    FirebaseFirestore.instance
+                                        .collection(FirebaseConstants.groups)
+                                        .doc(widget.groupId)
+                                        .collection(FirebaseConstants.members)
+                                        .doc(memberId)
+                                        .delete()
+                                        .then((_) {
+                                      setState(() {
+                                        widget.memberList.removeAt(index);
+                                      });
+                                    }).catchError((error) {
+                                      print('Error deleting member: $error');
+                                    });
+                                  } else {
+                                    print('Invalid memberId: $memberId');
+                                  }
                                 } else {
                                   print('Invalid index for memberList: $index');
                                 }
                               } else {
                                 int addedMembersIndex = index - widget.memberList.length;
                                 if (addedMembersIndex >= 0 && addedMembersIndex < addedMembers.length) {
-                                  // Ensure index is valid for addedMembers
-                                  addedMembers.removeAt(addedMembersIndex);
+                                  setState(() {
+                                    addedMembers.removeAt(addedMembersIndex);
+                                  });
                                 } else {
                                   print('Invalid index for addedMembers: $addedMembersIndex');
                                 }
                               }
                             });
                           },
+
                           child: Icon(
                             Icons.close,
                             color: Colors.red,
@@ -535,7 +649,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
         ),
         ///it is for add new card or group
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: Padding(
+        floatingActionButton:_isUploading==false? Padding(
           padding:  EdgeInsets.all(width*0.07),
           child: SizedBox(
             height: width*0.12,
@@ -621,6 +735,27 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
                 radius: 16,
                 backgroundColor:primaryColor,child: Icon(Icons.check,color: Colors.white,)),
             label: Text('Done',style: GoogleFonts.inter(color: Colors.black,fontSize: 20),),
+            ),
+          ),
+        ):Padding(
+          padding:  EdgeInsets.all(width*0.07),
+          child: SizedBox(
+            height: width*0.12,
+            width: width*0.3,
+            child: FloatingActionButton.extended(
+
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
+              backgroundColor: Colors.white,
+              onPressed: () {
+                showSnackBar(context, 'Uploading Image');
+
+              },
+              icon: CircleAvatar(
+                  radius: 16,
+                  backgroundColor:primaryColor,child: Icon(Icons.check,color: Colors.white,)),
+              label: Text('Done',style: GoogleFonts.inter(color: Colors.black,fontSize: 20),),
             ),
           ),
         ),

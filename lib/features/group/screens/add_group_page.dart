@@ -9,13 +9,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart';
-import 'package:qctt/core/pallette/pallete.dart';
-import 'package:qctt/features/Home/screens/splash_screen.dart';
-import 'package:qctt/models/group_model.dart';
-import 'package:qctt/models/member_model.dart';
 
+
+import '../../../core/pallette/pallete.dart';
 import '../../../core/utils/utils.dart';
 import '../../../main.dart';
+import '../../../models/group_model.dart';
+import '../../../models/member_model.dart';
 import '../../Home/screens/navigation_page.dart';
 import '../../Home/screens/routing_page.dart';
 import '../controller/group_controller.dart';
@@ -36,6 +36,9 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
   String downloadUrl="";
    List addedMembers=[];
   List<MemberModel> memberList=[];
+  bool _isUploading = false;
+
+  bool _isImageChanged = false;
   Future<void> _showImageSourceActionSheet(BuildContext context) async {
     showDialog(
       context: context,
@@ -88,17 +91,30 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
         _groupImagePath = pickedFile.path;
         _image = File(pickedFile.path);
         _imageName = basename(pickedFile.path);
+        _isImageChanged = true;
       });
 
       try {
+        setState(() {
+          _isUploading = true;  // Add this state to show uploading status
+        });
         // Upload image to Firebase Storage
         String fileName = "group_images/$_imageName";
         Reference storageRef = FirebaseStorage.instance.ref(fileName);
 
-        await storageRef.putFile(_image!);
+        // Upload the file to Firebase Storage
+        TaskSnapshot uploadTask = await storageRef.putFile(_image!);
+
+        // Get the download URL after upload completes
+        String updatedDownloadUrl = await uploadTask.ref.getDownloadURL();
 
         // Get the download URL
-        downloadUrl = await storageRef.getDownloadURL();
+        setState(() {
+          downloadUrl = updatedDownloadUrl; // Update the URL in state
+
+          _isUploading = false;
+        });
+
 
         // Save the download URL to Firestore (if needed)
         // await FirebaseFirestore.instance.collection('groups').add({
@@ -279,54 +295,110 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
                     ),
                   ),
                   SizedBox(width: width*0.04),
-                  _image==null?Padding(
-                    padding:  EdgeInsets.only(top: width*0.028,),
+                  Padding(
+                    padding: EdgeInsets.only(top: width * 0.028),
                     child: Column(
                       children: [
-                        IconButton(
+                        downloadUrl.isEmpty
+                            ?_image==null? IconButton(
                           icon: Icon(
                             Icons.image,
-                            size: width*0.185,
+                            size: width * 0.185,
                           ),
-                          onPressed: () {
-                            _showImageSourceActionSheet(context); // Pass the BuildContext
-
-                            // _pickGroupImage();
-                            // Handle image icon action
+                          onPressed: _isUploading
+                              ? null  // Disable while uploading
+                              : () {
+                            _showImageSourceActionSheet(context);
                           },
-                        ),
-                        Text(
-                          'Select image',
-                          style: GoogleFonts.inter(fontSize: width*0.02,),
-                        ),
-
-                      ],
-                    ),
-                  ):Padding(
-                    padding:  EdgeInsets.only(top: width*0.028,),
-                    child: Column(
-                      children: [
-                        InkWell(
-                          onTap: () {
-                            _showImageSourceActionSheet(context); // Pass the BuildContext
-                            // _pickGroupImage();
-                            // Handle image icon action
+                        ):
+                           InkWell(
+                          onTap: _isUploading
+                              ? null  // Disable while uploading
+                              : () {
+                            _showImageSourceActionSheet(context);
                           },
                           child: Container(
                             color: Colors.grey,
-                              height: width*0.14
-                              ,width: width*0.14,child: Image.file(_image!,fit: BoxFit.fill,)),
+                            height: width * 0.14,
+                            width: width * 0.14,
+                            child:Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: CircularProgressIndicator(),
+                            ),
+                          ),
+                        )
+                            : InkWell(
+                          onTap: _isUploading
+                              ? null  // Disable while uploading
+                              : () {
+                            _showImageSourceActionSheet(context);
+                          },
+                          child: Container(
+                            color: Colors.grey,
+                            height: width * 0.14,
+                            width: width * 0.14,
+                            child: _isUploading
+                                ? Center(child: CircularProgressIndicator()) // Show loading indicator
+                                : _image != null
+                                ? Image.file(_image!, fit: BoxFit.fill)
+                                : Image.network(downloadUrl, fit: BoxFit.fill),
+                          ),
                         ),
-                        SizedBox(height: width*0.01),
-
                         Text(
-                          // _imageName.toString(),
-                          'select image',
-                          style: GoogleFonts.inter(fontSize: width*0.02,), overflow: TextOverflow.ellipsis
+                          'Select image',
+                          style: GoogleFonts.inter(fontSize: width * 0.02),
                         ),
                       ],
                     ),
                   )
+                  // _image==null?Padding(
+                  //   padding:  EdgeInsets.only(top: width*0.028,),
+                  //   child: Column(
+                  //     children: [
+                  //       IconButton(
+                  //         icon: Icon(
+                  //           Icons.image,
+                  //           size: width*0.185,
+                  //         ),
+                  //         onPressed: () {
+                  //           _showImageSourceActionSheet(context); // Pass the BuildContext
+                  //
+                  //           // _pickGroupImage();
+                  //           // Handle image icon action
+                  //         },
+                  //       ),
+                  //       Text(
+                  //         'Select image',
+                  //         style: GoogleFonts.inter(fontSize: width*0.02,),
+                  //       ),
+                  //
+                  //     ],
+                  //   ),
+                  // ):Padding(
+                  //   padding:  EdgeInsets.only(top: width*0.028,),
+                  //   child: Column(
+                  //     children: [
+                  //       InkWell(
+                  //         onTap: () {
+                  //           _showImageSourceActionSheet(context); // Pass the BuildContext
+                  //           // _pickGroupImage();
+                  //           // Handle image icon action
+                  //         },
+                  //         child: Container(
+                  //           color: Colors.grey,
+                  //             height: width*0.14
+                  //             ,width: width*0.14,child: Image.file(_image!,fit: BoxFit.fill,)),
+                  //       ),
+                  //       SizedBox(height: width*0.01),
+                  //
+                  //       Text(
+                  //         // _imageName.toString(),
+                  //         'select image',
+                  //         style: GoogleFonts.inter(fontSize: width*0.02,), overflow: TextOverflow.ellipsis
+                  //       ),
+                  //     ],
+                  //   ),
+                  // )
                 ],
               ),
               // SizedBox(height: width*0.1),
@@ -422,7 +494,7 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
         ),
         ///it is for add new card or group
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-        floatingActionButton: Padding(
+        floatingActionButton:_isUploading==false? Padding(
           padding:  EdgeInsets.all(width*0.05),
           child: SizedBox(
             height: width*0.12,
@@ -516,8 +588,74 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
               ),
             ),
           ),
+        ):Padding(
+          padding: EdgeInsets.all(width * 0.05),
+          child: SizedBox(
+            height: width * 0.12,
+            width: width * 0.35,
+            child: FloatingActionButton.extended(
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(25),
+              ),
+              backgroundColor: Colors.blue,
+              onPressed: _isUploading
+                  ? null // Disable the button while uploading
+                  : () async {
+                setState(() {
+                  _isUploading = true; // Set uploading state to true
+                });
+
+                // Simulate uploading process
+                await Future.delayed(Duration(seconds: 3));
+
+                setState(() {
+                  _isUploading = false; // Reset uploading state to false
+                });
+
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Image uploaded successfully!')),
+                );
+              },
+              label: _isUploading
+                  ? Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  SizedBox(
+                    height: width * 0.05,
+                    width: width * 0.05,
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                      strokeWidth: 2.0,
+                    ),
+                  ),
+                  SizedBox(width: width * 0.02),
+                  Text(
+                    "Uploading...",
+                    style: GoogleFonts.inter(
+                      fontSize: width * 0.04,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              )
+                  : Row(
+                children: [
+                  Icon(Icons.add, color: Colors.white),
+                  SizedBox(width: width * 0.02),
+                  Text(
+                    "Add Card",
+                    style: GoogleFonts.inter(
+                      fontSize: width * 0.04,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
         ),
-      );
+        );
+
 
      // );
   }

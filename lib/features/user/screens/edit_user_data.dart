@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:qctt/core/pallette/pallete.dart';
 
+import '../../../core/pallette/pallete.dart';
 import '../../../core/utils/utils.dart';
 import '../../../main.dart';
 import '../../Home/screens/routing_page.dart';

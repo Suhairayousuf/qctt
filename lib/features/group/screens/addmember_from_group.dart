@@ -369,15 +369,16 @@ import 'package:contacts_service/contacts_service.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:qctt/core/constants/firebase_constants.dart';
-import 'package:qctt/core/utils/utils.dart';
-import 'package:qctt/features/Home/screens/sqflite.dart';
-import 'package:qctt/models/member_model.dart';
 
+
+import '../../../core/constants/firebase_constants.dart';
 import '../../../core/pallette/pallete.dart';
+import '../../../core/utils/utils.dart';
 import '../../../main.dart';
+import '../../../models/member_model.dart';
 import '../../Home/screens/routing_page.dart';
 import '../../Home/screens/splash_screen.dart';
+import '../../Home/screens/sqflite.dart';
 
 class AddMemberFromEditPage extends StatefulWidget {
   final bool type;

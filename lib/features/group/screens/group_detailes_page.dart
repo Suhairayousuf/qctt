@@ -1,14 +1,15 @@
 import 'dart:async';
 
+import 'package:QCTT/core/constants/firebase_constants.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:qctt/core/pallette/pallete.dart';
-import 'package:qctt/features/group/controller/group_controller.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../../core/constants/images/images.dart';
+import '../../../core/pallette/pallete.dart';
 import '../../../main.dart';
 import '../../../models/member_model.dart';
 import '../../Home/screens/routing_page.dart';
@@ -171,153 +172,166 @@ void initState() {
         ],      ),
       body:
 
-            Column(
-              children: [
-                Expanded(
-                child:
-                StreamBuilder<List<MemberModel>>(
-                  stream: getMembers(),
-                  builder: (context, snapshot) {
-                    return ListView.builder(
-                      itemCount: members.length,
-                      itemBuilder: (context, index) {
+      Column(
+        children: [
+          Expanded(
+            child: StreamBuilder<List<MemberModel>>(
+              stream: getMembers(),
+              builder: (context, snapshot) {
+                return ListView.builder(
+                  itemCount: members.length,
+                  itemBuilder: (context, index) {
+                    final contact = members[index];
 
-                        final contact = members[index];
-                        return InkWell(
-                          onTap: () {
-                            // Handle tap
-                          },
-                          child: Container(
-                            color: Colors.white,
-                            padding: EdgeInsets.symmetric(vertical: 5, horizontal: 12), // Adjust padding as needed
-                            child: Column(
-                              children: [
-                                SizedBox(height: width*0.02), // Space between items
+                    return Dismissible(
+                      key: Key(contact.memberId.toString()), // Unique key for each contact
+                      direction: DismissDirection.endToStart, // Swipe right to left
+                      background: Container(
+                        color: Colors.red, // Background color while swiping
+                        alignment: Alignment.centerRight,
+                        padding: EdgeInsets.only(right: width * 0.05),
+                        child: Icon(Icons.delete, color: Colors.white),
+                      ),
+                      onDismissed: (direction) async {
+                        // Delete the contact from Firebase and the list
+                        FirebaseFirestore.instance.collection(FirebaseConstants.groups).
+                        doc(groupId).collection(FirebaseConstants.members).doc(contact.memberId).delete();
+                        // await deleteContactFromFirebase(contact.memberId); // Implement this function
+                        setState(() {
+                          members.removeAt(index); // Remove from the local list
+                        });
 
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween, // Space out widgets
-                                  crossAxisAlignment: CrossAxisAlignment.center, // Align items in the center vertically
-                                  children: [
-                                    // Leading widget
-                                    CircleAvatar(
-                                      radius: 22,
-                                      backgroundColor: Colors.black,
-                                      child: Icon(Icons.person, color: Colors.white, size: width * 0.08),
-                                    ),
-                                    SizedBox(width: width * 0.02), // Space between leading and title
-
-                                    // Title and Subtitle
-                                    Expanded(
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start, // Align text to the left
-                                        children: [
-                                          Text(
-                                            contact.memberName.toString(),
-                                            style: GoogleFonts.inter(
-                                              color: Colors.black,
-                                              fontSize: width * 0.036,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          if (contact.phone != null && contact.phone!.isNotEmpty)
-                                            Text(
-                                              contact.phone ?? "No Phone Number",
-                                              style: GoogleFonts.inter(
-                                                color: Colors.grey,
-                                                fontSize: width * 0.032,
-                                              ),
-                                            ),
-                                        ],
-                                      ),
-                                    ),
-
-                                    // Trailing Actions
-                                    Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        InkWell(
-                                          onTap: (){
-                                            Navigator.pushNamed(
-                                              context,
-                                              '/UserSinglePage',
-                                              arguments: {
-                                                // 'groupId':groupId,
-                                                // 'memberid': contact.memberId,
-                                                // 'memberModel': contact,
-                                                'name':contact.memberName,
-                                                'phNumber':contact.phone
-
-                                              },
-                                            );
-                                          },
-                                          child: CircleAvatar(
-                                            radius: width * 0.05,
-                                            backgroundColor: Colors.green.shade700,
-                                            child: Icon(Icons.group_sharp, color: Colors.white, size: width * 0.08),
-                                          ),
-                                        ),
-                                        SizedBox(width: width * 0.02),
-                                        InkWell(
-                                          onTap: () async {
-                                            String whatsappNumber = "+91" + (contact.phone.toString() ?? "");
-                                            String url = "https://wa.me/$whatsappNumber";
-
-                                            if (await canLaunch(url)) {
-                                              await launch(url);
-                                            } else {
-                                              print('Could not launch $url');
-                                              throw 'Could not launch $url';
-                                            }
-                                          },
-                                          child: CircleAvatar(
-                                            radius: width * 0.05,
-                                            backgroundColor: Colors.green.shade700,
-                                            child: Image.asset(
-                                              ImageConstants.whatsapp,
-                                              color: Colors.white,
-                                              height: width * 0.06,
-                                              width: width * 0.06,
-                                            ),
-                                          ),
-                                        ),
-                                        SizedBox(width: width * 0.02),
-
-                                        InkWell(
-                                          onTap: () async {
-                                            String phoneNumber = "+91" + (contact.phone.toString() ?? "");
-                                            final Uri url = Uri(scheme: 'tel', path: phoneNumber);
-
-                                            if (await canLaunchUrl(url)) {
-                                              await launchUrl(url);
-                                            } else {
-                                              throw 'Could not launch $url';
-                                            }
-                                          },
-                                          child: CircleAvatar(
-                                            radius: width * 0.05,
-                                            backgroundColor: primaryColor,
-                                            child: Icon(Icons.call, color: Colors.white, size: width * 0.06),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: width * 0.025), // Space between items
-                                Divider(color: Colors.grey.shade300), // Add divider
-                              ],
-                            ),
-                          ),
+                        // Optionally, show a snackbar to confirm the deletion
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text("${contact.memberName} deleted")),
                         );
                       },
+                      child: InkWell(
+                        onTap: () {
+                          // Handle tap
+                        },
+                        child: Container(
+                          color: Colors.white,
+                          padding: EdgeInsets.symmetric(vertical: 5, horizontal: 12),
+                          child: Column(
+                            children: [
+                              SizedBox(height: width * 0.02),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  CircleAvatar(
+                                    radius: 22,
+                                    backgroundColor: Colors.black,
+                                    child: Icon(Icons.person, color: Colors.white, size: width * 0.08),
+                                  ),
+                                  SizedBox(width: width * 0.02),
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          contact.memberName.toString(),
+                                          style: GoogleFonts.inter(
+                                            color: Colors.black,
+                                            fontSize: width * 0.036,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                        if (contact.phone != null && contact.phone!.isNotEmpty)
+                                          Text(
+                                            contact.phone ?? "No Phone Number",
+                                            style: GoogleFonts.inter(
+                                              color: Colors.grey,
+                                              fontSize: width * 0.032,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      InkWell(
+                                        onTap: () {
+                                          Navigator.pushNamed(
+                                            context,
+                                            '/UserSinglePage',
+                                            arguments: {
+                                              'name': contact.memberName,
+                                              'phNumber': contact.phone,
+                                            },
+                                          );
+                                        },
+                                        child: CircleAvatar(
+                                          radius: width * 0.05,
+                                          backgroundColor: Colors.green.shade700,
+                                          child: Icon(Icons.group_sharp, color: Colors.white, size: width * 0.08),
+                                        ),
+                                      ),
+                                      SizedBox(width: width * 0.02),
+                                      InkWell(
+                                        onTap: () async {
+                                          String whatsappNumber = "+91" + (contact.phone.toString() ?? "");
+                                          String url = "https://wa.me/$whatsappNumber";
+
+                                          if (await canLaunch(url)) {
+                                            await launch(url);
+                                          } else {
+                                            print('Could not launch $url');
+                                            throw 'Could not launch $url';
+                                          }
+                                        },
+                                        child: CircleAvatar(
+                                          radius: width * 0.05,
+                                          backgroundColor: Colors.green.shade700,
+                                          child: Image.asset(
+                                            ImageConstants.whatsapp,
+                                            color: Colors.white,
+                                            height: width * 0.06,
+                                            width: width * 0.06,
+                                          ),
+                                        ),
+                                      ),
+                                      SizedBox(width: width * 0.02),
+                                      InkWell(
+                                        onTap: () async {
+                                          String phoneNumber = "+91" + (contact.phone.toString() ?? "");
+                                          final Uri url = Uri(scheme: 'tel', path: phoneNumber);
+
+                                          if (await canLaunchUrl(url)) {
+                                            await launchUrl(url);
+                                          } else {
+                                            throw 'Could not launch $url';
+                                          }
+                                        },
+                                        child: CircleAvatar(
+                                          radius: width * 0.05,
+                                          backgroundColor: primaryColor,
+                                          child: Icon(Icons.call, color: Colors.white, size: width * 0.06),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: width * 0.025),
+                              Divider(color: Colors.grey.shade300),
+                            ],
+                          ),
+                        ),
+                      ),
                     );
-                  }
-                ),
-                ),
-              ],
-            )
-          
-          );
+                  },
+                );
+              },
+            ),
+          ),
+        ],
+      )
+
+
+    );
         }
       // ),
     // );
