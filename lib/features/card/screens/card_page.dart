@@ -457,6 +457,7 @@ import 'package:flutter_card_swiper/flutter_card_swiper.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:screenshot/screenshot.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -476,6 +477,8 @@ class CardPage extends ConsumerStatefulWidget {
 }
 
 class _CardPageState extends ConsumerState<CardPage> {
+  final ScreenshotController screenshotController = ScreenshotController();
+
   List<CardModel> cardsList = [];
 
   Future<void> getCards() async {
@@ -495,7 +498,7 @@ class _CardPageState extends ConsumerState<CardPage> {
     });
   }
 
-  void _showBottomSheet(BuildContext context,String whatsapp,String facebook,String linkdn,String twitter) {
+  void _showBottomSheet(BuildContext context,String web,String facebook,String linkdn,String instagram,String twitter,) {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -512,32 +515,35 @@ class _CardPageState extends ConsumerState<CardPage> {
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 SizedBox(height: width * 0.1),
+                ///web
                 Row(
                   children: [
                     SizedBox(
-                      child: Image.asset(ImageConstants.whatsapp, height: width*0.07, color: Colors.black),
+                      child: Image.asset(ImageConstants.globIcon, height: width*0.07, color: Colors.black),
                     ),
                     SizedBox(width: width * 0.05),
                     InkWell(
                         onTap: () async {
-                          String whatsappNumber = "+91"+whatsapp.toString();
-
-                          //String whatsappNumber = "+91" + (contact.phone.toString() ?? "");
-                          String url = "https://wa.me/$whatsapp";
-
-                          if (await canLaunch(url)) {
-                            await launch(url);
-                          } else {
-                            print('Could not launch $url');
-                            throw 'Could not launch $url';
-                          }
+                          launchURL(web.toString());
+                          // String whatsappNumber = "+91"+whatsapp.toString();
+                          //
+                          // //String whatsappNumber = "+91" + (contact.phone.toString() ?? "");
+                          // String url = "https://wa.me/$whatsapp";
+                          //
+                          // if (await canLaunch(url)) {
+                          //   await launch(url);
+                          // } else {
+                          //   print('Could not launch $url');
+                          //   throw 'Could not launch $url';
+                          // }
                         },
                         child: Container(
                             width: width*0.6,
-                            child: Text(whatsapp, style: GoogleFonts.inter(fontSize: width*0.07)))),
+                            child: Text(web, style: GoogleFonts.inter(fontSize: width*0.07)))),
                   ],
                 ),
                 SizedBox(height: width * 0.09),
+                ///facebook urllauncher
                 Row(
                   children: [
                     SizedBox(
@@ -561,6 +567,8 @@ class _CardPageState extends ConsumerState<CardPage> {
                   ],
                 ),
                 SizedBox(height: width * 0.09),
+                ///linkedin urllauncher
+
                 Row(
                   children: [
                     SizedBox(
@@ -569,7 +577,7 @@ class _CardPageState extends ConsumerState<CardPage> {
                     SizedBox(width: width * 0.05),
                     InkWell(
                         onTap: (){
-                          if(facebook.toString().contains('https://linkedin.com/in/')){
+                          if(linkdn.toString().contains('https://linkedin.com/in/')){
                             launchProfileURL(linkdn.toString());
 
                           }else{
@@ -583,6 +591,38 @@ class _CardPageState extends ConsumerState<CardPage> {
                   ],
                 ),
                 SizedBox(height: width * 0.09),
+                ///instagram launcher
+                Row(
+                  children: [
+                    SizedBox(
+                      child: Image.asset(ImageConstants.instaIcon, height: width*0.07, color: Colors.black),
+                    ),
+                    SizedBox(width: width * 0.05),
+                    InkWell(
+                        onTap: (){
+                          if(instagram.contains('https://instagram.com/')){
+                            launchProfileURL(instagram.toString());
+
+                          }else{
+                            launchProfileURL("https://instagram.com/${instagram.toString()}");
+
+                          }
+                          // if(facebook.toString().contains('https://linkedin.com/in/')){
+                          //   launchProfileURL(linkdn.toString());
+                          //
+                          // }else{
+                          //   launchProfileURL("https://linkedin.com/in/${linkdn.toString()}");
+                          //
+                          // }
+                          // launchProfileURL(linkdn.toString());
+                        },
+                        child: Container( width: width*0.6,
+                            child: Text(instagram
+                                , style: GoogleFonts.inter(fontSize: width*0.07)))),
+                  ],
+                ),
+                SizedBox(height: width * 0.09),
+                ///twitter launcher
                 Row(
                   children: [
                     SizedBox(
@@ -647,7 +687,7 @@ class _CardPageState extends ConsumerState<CardPage> {
           actions: [
             Padding(
               padding:  EdgeInsets.only(right: width*0.03),
-              child: Text('v:1.1',style: GoogleFonts.inter(fontSize: 10),),
+              child: Text('v:1.5',style: GoogleFonts.inter(fontSize: 10),),
             )
           ],
           // centerTitle: true,
@@ -697,7 +737,7 @@ class _CardPageState extends ConsumerState<CardPage> {
                                         fit: BoxFit.fill,
                                       ),
                                     ),
-                                    height: width * 1.1,
+                                     // height: width * 1.1,
                                     width: width * 1.2,
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -746,8 +786,8 @@ class _CardPageState extends ConsumerState<CardPage> {
                                                         color: Colors.white),
                                                     onPressed: () {
                                                       String messageToCopy = '''
-Name: ${data[index].name}\nContact: ${data[index].phone}\nWebsite: ${data[index].website}\nDesignation: ${data[index].designation}\nEmail: ${data[index].email}\nTwitter: ${data[index].twitter}\nFacebook: ${data[index].facebook}\nWhatsapp: ${data[index].whatsapp}\nLinkedIn: ${data[index].linkedin}
-''';
+                                  Name: ${data[index].name}\nContact: ${data[index].phone}\nDesignation: ${data[index].designation}\nWebsite: ${data[index].website}\nEmail: ${data[index].email}\nX: ${data[index].twitter}\nFacebook: ${data[index].facebook}\nWhatsapp: ${data[index].whatsapp}\nInstagram: ${data[index].instagram}
+                                  ''';
                                                       Clipboard.setData(ClipboardData(
                                                           text: messageToCopy));
                                                       ScaffoldMessenger.of(context)
@@ -756,20 +796,207 @@ Name: ${data[index].name}\nContact: ${data[index].phone}\nWebsite: ${data[index]
                                                               'Text copied')));
                                                     },
                                                   ),
-                                                  IconButton(
-                                                    icon: Icon(Icons.share,
-                                                        color: Colors.white),
-                                                    onPressed: () async {
-                                                      final ByteData byteData = await rootBundle.load('assets/images/logo2.jpeg');
 
-                                                      // Write the image data to a temporary file
-                                                      final tempDir = await getTemporaryDirectory();
-                                                      final file = File('${tempDir.path}/logo2.jpeg');
-                                                      await file.writeAsBytes(byteData.buffer.asUint8List());
-                                                      Share.shareXFiles([XFile(file.path)],text:
-                                                          'Name: ${data[index].name}\nContact: ${data[index].phone}\nWebsite: ${data[index].website}\nDesignation: ${data[index].designation}\nEmail: ${data[index].email}\nTwitter: ${data[index].twitter}\nFacebook: ${data[index].facebook}\nWhatsapp: ${data[index].whatsapp}\nLinkedIn: ${data[index].linkedin}');
+                                                  IconButton(
+                                                    icon: Icon(Icons.share, color: Colors.white),
+                                                    onPressed: () async {
+                                                      // Create a ScreenshotController
+                                                      // final ScreenshotController screenshotController = ScreenshotController();
+
+                                                      // Wrap ScreenshotWidget with Builder to ensure the correct context
+                                                      final imageFile = await screenshotController.captureFromWidget(
+                                                          Container(
+                                                            decoration: BoxDecoration(
+                                                              image: DecorationImage(
+                                                                image: AssetImage('assets/images/bg.png'),
+                                                                fit: BoxFit.cover,
+                                                              ),
+                                                            ),
+                                                            // height: width * 1.1,
+                                                             width: width ,
+                                                            child: Column(
+                                                              mainAxisSize: MainAxisSize.min,
+                                                              crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                              children: [
+                                                                SizedBox(height: width * 0.1),
+
+                                                                Center(
+                                                                  child: Text(
+                                                                    data[index].name,
+                                                                    style: GoogleFonts.inter(
+                                                                      fontSize: width * 0.09,
+                                                                      color: Colors.white,
+                                                                      fontWeight: FontWeight.bold,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(height: width * 0.02),
+
+                                                                Center(
+                                                                  child: Text(
+                                                                    data[index].designation,
+                                                                    style: GoogleFonts.inter(
+                                                                      fontSize: width * 0.04,
+                                                                      color: Colors.white,
+                                                                      fontWeight: FontWeight.w500,
+                                                                    ),
+                                                                  ),
+                                                                ),
+                                                                SizedBox(height: width * 0.05),
+                                                                Padding(
+                                                                  padding: EdgeInsets.only(left: width * 0.15),
+                                                                  child: Column(
+                                                                    // mainAxisAlignment: MainAxisAlignment.center,
+                                                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                                                    children: [
+                                                                      Row(
+                                                                        children: [
+                                                                          IconButton(
+                                                                            icon: Icon(Icons.call, size: width * 0.06, color: Colors.white),
+                                                                            onPressed: () {
+                                                                              print("Call icon pressed");
+                                                                            },
+                                                                          ),
+                                                                          Expanded(
+                                                                            child: Text(data[index].phone,
+                                                                                style: GoogleFonts.roboto(fontSize: width * 0.045, color: Colors.white)),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      Row(
+                                                                        children: [
+                                                                          Padding(
+                                                                            padding: const EdgeInsets.only(left: 11.0),
+                                                                            child: SizedBox(
+                                                                              child: Image.asset(
+                                                                                ImageConstants.whatsapp,
+                                                                                height: width * 0.06,
+                                                                                color: Colors.white,
+                                                                              ),
+                                                                            ),
+                                                                          ),
+                                                                          SizedBox(width: 13),
+                                                                          Expanded(
+                                                                            child: Text(data[index].whatsapp,
+                                                                                style: GoogleFonts.inter(fontSize: width * 0.042, color: Colors.white)),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                      Row(
+                                                                        children: [
+                                                                          IconButton(
+                                                                            icon: Icon(Icons.mail, size: width * 0.06, color: Colors.white),
+                                                                            onPressed: () {
+                                                                              print("Mail icon pressed");
+                                                                            },
+                                                                          ),
+                                                                          Expanded(
+                                                                            child: Text(data[index].email,
+                                                                                style: GoogleFonts.inter(fontSize: width * 0.042, color: Colors.white)),
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                                SizedBox(height: width * 0.05),
+                                                                Row(
+                                                                   mainAxisAlignment: MainAxisAlignment.center,
+                                                                  children: [
+                                                                    Image.asset(
+                                                                      ImageConstants.globIcon,
+                                                                       height: width * 0.1,
+                                                                      color: Colors.white,
+                                                                      fit: BoxFit.fitHeight,
+                                                                    ),
+                                                                    SizedBox(width: width * 0.03),
+                                                                    Image.asset(
+                                                                      ImageConstants.facebook,
+                                                                      height: width * 0.1,
+                                                                      color: Colors.white,
+                                                                      fit: BoxFit.fitHeight,
+                                                                    ),
+                                                                    SizedBox(width: width * 0.03),
+                                                                    Image.asset(
+                                                                      ImageConstants.linkedin2,
+                                                                      height: width * 0.1,
+                                                                      color: Colors.white,
+                                                                      fit: BoxFit.fitHeight,
+                                                                    ),
+                                                                    SizedBox(width: width * 0.03),
+                                                                    Image.asset(
+                                                                      ImageConstants.instaIcon,
+                                                                      height: width * 0.1,
+                                                                      color: Colors.white,
+                                                                      fit: BoxFit.fitHeight,
+                                                                    ),
+                                                                    SizedBox(width: width * 0.03),
+                                                                    Container(
+                                                                      height: width * 0.1,
+                                                                      width: width * 0.1,
+                                                                      decoration:BoxDecoration(
+                                                                        color: Colors.white,
+                                                                        shape: BoxShape.circle
+                                                                      ) ,
+
+                                                                      child: Image.asset(
+                                                                        ImageConstants.twitter,
+                                                                        height: width * 0.1,
+                                                                        // color: Colors.white,
+                                                                        fit: BoxFit.fitHeight,
+                                                                        color: primaryColor,
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                SizedBox(height: width * 0.1),
+                                                                Container(
+                                                                   height: width * 0.2,
+                                                                  width: width ,
+                                                                  color: Colors.white,
+                                                                  child:
+                                                                  Image.asset('assets/images/Created by QCTT.png'),
+                                                                ),
+
+                                                              ],
+                                                            ),
+                                                          )
+
+                                                          // ScreenshotWidget(
+                                                          //
+                                                          //           data: data[index],
+                                                          //         width:width// Pass the data here
+                                                          //       ),
+                                                        // Builder(
+                                                        //   builder: (context) {
+                                                        //     // Now the ScreenshotWidget has a proper BuildContext
+                                                        //     return ScreenshotWidget(
+                                                        //         screenshotController: screenshotController,
+                                                        //
+                                                        //         data: data[index],
+                                                        //       width:width// Pass the data here
+                                                        //     );
+                                                        //   },
+                                                        // ),
+                                                      );
+
+                                                      if (imageFile != null) {
+                                                        // Save the image to a temporary directory
+                                                        final tempDir = await getTemporaryDirectory();
+                                                        final file = File('${tempDir.path}/screenshot.png');
+                                                        await file.writeAsBytes(imageFile);
+
+                                                        // Share the image file along with other text data
+                                                        Share.shareXFiles(
+                                                          [XFile(file.path)],
+                                                          text:
+                                                          'Name: ${data[index].name}\nContact: ${data[index].phone}\nDesignation: ${data[index].designation}\nWebsite: ${data[index].website}\nEmail: ${data[index].email}\nX: ${data[index].twitter}\nFacebook: ${data[index].facebook}\nWhatsapp: ${data[index].whatsapp}\nLinkedIn: ${data[index].linkedin}\nInstagram: ${data[index].instagram}',
+                                                        );
+                                                      }
                                                     },
                                                   ),
+
+
                                                 ],
                                               ),
                                             ),
@@ -782,9 +1009,24 @@ Name: ${data[index].name}\nContact: ${data[index].phone}\nWebsite: ${data[index]
                                               child: Text(
                                                 data[index].name,
                                                 style: GoogleFonts.inter(
-                                                  fontSize: width * 0.075,
+                                                  fontSize: width * 0.08,
                                                   color: Colors.white,
                                                   fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                        Center(
+                                          child: Container(
+                                            width: width * 0.8,
+                                            child: Center(
+                                              child: Text(
+                                                data[index].designation,
+                                                style: GoogleFonts.inter(
+                                                  fontSize: width * 0.038,
+                                                  color: Colors.white,
+                                                   fontWeight: FontWeight.w500,
                                                 ),
                                               ),
                                             ),
@@ -794,6 +1036,10 @@ Name: ${data[index].name}\nContact: ${data[index].phone}\nWebsite: ${data[index]
                                         Padding(
                                           padding: EdgeInsets.only(left: width * 0.15),
                                           child: Column(
+                                            mainAxisAlignment: MainAxisAlignment.center,
+                                            crossAxisAlignment: CrossAxisAlignment.center,
+
+
                                             children: [
                                               Row(
                                                 children: [
@@ -806,9 +1052,33 @@ Name: ${data[index].name}\nContact: ${data[index].phone}\nWebsite: ${data[index]
                                                     },
                                                   ),
                                                   Text(data[index].phone,
-                                                      style: GoogleFonts.inter(
-                                                          fontSize: width * 0.03,
+                                                      style: GoogleFonts.roboto(
+                                                          fontSize: width * 0.045,
                                                           color: Colors.white)),
+                                                ],
+                                              ),
+                                              Row(
+                                                children: [
+                                                  Padding(
+                                                    padding: const EdgeInsets.only(left: 11.0),
+                                                    child: SizedBox(
+                                                      child: Image.asset(
+                                                        ImageConstants.whatsapp,
+                                                        height: width * 0.06,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  SizedBox(width: 13,),
+                                                  Flexible(
+                                                    child: Container(
+                                                      // width: width * 0.5,
+                                                      child: Text(data[index].whatsapp,
+                                                          style: GoogleFonts.inter(
+                                                              fontSize: width * 0.042,
+                                                              color: Colors.white)),
+                                                    ),
+                                                  ),
                                                 ],
                                               ),
                                               Row(
@@ -821,33 +1091,18 @@ Name: ${data[index].name}\nContact: ${data[index].phone}\nWebsite: ${data[index]
                                                       print("Mail icon pressed");
                                                     },
                                                   ),
-                                                  Text(data[index].email,
-                                                      style: GoogleFonts.inter(
-                                                          fontSize: width * 0.03,
-                                                          color: Colors.white)),
-                                                ],
-                                              ),
-                                              Row(
-                                                children: [
-                                                  IconButton(
-                                                    icon: Icon(Icons.language,
-                                                        size: width * 0.06,
-                                                        color: Colors.white),
-                                                    onPressed: () {
-                                                      print("Web icon pressed");
-                                                    },
-                                                  ),
                                                   Flexible(
                                                     child: Container(
-                                                      width: width * 0.5,
-                                                      child: Text(data[index].website,
+                                                      // width: width * 0.5,
+                                                      child: Text(data[index].email,
                                                           style: GoogleFonts.inter(
-                                                              fontSize: width * 0.03,
+                                                              fontSize: width * 0.042,
                                                               color: Colors.white)),
                                                     ),
                                                   ),
                                                 ],
                                               ),
+
                                             ],
                                           ),
                                         ),
@@ -856,52 +1111,67 @@ Name: ${data[index].name}\nContact: ${data[index].phone}\nWebsite: ${data[index]
                                           onTap: () {
                                             _showBottomSheet(
                                               context,
-                                              data[index].whatsapp.toString(),
+                                              // data[index].whatsapp.toString(),
+                                              data[index].website.toString(),
                                               data[index].facebook.toString(),
                                               data[index].linkedin.toString(),
+                                              data[index].instagram.toString(),
                                               data[index].twitter.toString(),
                                             );
                                           },
                                           child: Row(
                                             mainAxisAlignment: MainAxisAlignment.center,
                                             children: [
-                                              SizedBox(
-                                                child: Image.asset(
-                                                  ImageConstants.whatsapp,
-                                                  height: width * 0.09,
-                                                  color: Colors.white,
-                                                ),
-                                              ),
-                                              SizedBox(width: width * 0.01),
-                                              IconButton(
-                                                icon: Icon(Icons.facebook,
-                                                    size: width * 0.1,
-                                                    color: Colors.white),
-                                                onPressed: () {
-                                                  print("Facebook icon pressed");
-                                                },
-                                              ),
-                                              SizedBox(width: width * 0.01),
-                                              SizedBox(
-                                                child: Image.asset(
-                                                  ImageConstants.linkedin2,
-                                                  height: width * 0.08,
-                                                  color: Colors.white,
-                                                ),
+
+                                              Image.asset(
+                                                ImageConstants.globIcon,
+                                                height: width * 0.08,
+                                                color: Colors.white,
+                                                fit: BoxFit.fitHeight,
                                               ),
                                               SizedBox(width: width * 0.03),
-                                              CircleAvatar(
-                                                radius: width * 0.045,
-                                                backgroundColor: Colors.white,
+                                              Image.asset(
+                                                ImageConstants.facebook,
+                                                height: width * 0.08,
+                                                color: Colors.white,
+                                                fit: BoxFit.fitHeight,
+                                              ),
+                                              SizedBox(width: width * 0.03),
+                                              Image.asset(
+                                                ImageConstants.linkedin2,
+                                                height: width * 0.08,
+                                                color: Colors.white,
+                                                fit: BoxFit.fitHeight,
+                                              ),
+                                              SizedBox(width: width * 0.03),
+                                              Image.asset(
+                                                ImageConstants.instaIcon,
+                                                height: width * 0.08,
+                                                color: Colors.white,
+                                                fit: BoxFit.fitHeight,
+                                              ),
+                                              SizedBox(width: width * 0.03),
+                                              Container(
+                                                height: width * 0.08,
+                                                width: width * 0.1,
+                                                decoration:BoxDecoration(
+                                                    color: Colors.white,
+                                                    shape: BoxShape.circle
+                                                ) ,
+
                                                 child: Image.asset(
                                                   ImageConstants.twitter,
-                                                  height: width * 0.06,
+                                                  height: width * 0.1,
+                                                  // color: Colors.white,
+                                                  fit: BoxFit.fitHeight,
                                                   color: primaryColor,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         ),
+                                        SizedBox(height: width * 0.2),
+
                                       ],
                                     ),
                                   ),
@@ -955,3 +1225,9 @@ Name: ${data[index].name}\nContact: ${data[index].phone}\nWebsite: ${data[index]
     );
   }
 }
+
+
+
+
+
+

@@ -1,3 +1,4 @@
+import 'package:QCTT/main.dart';
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -27,6 +28,7 @@ class AddCardDetailsPage extends StatelessWidget {
   final TextEditingController facebookController = TextEditingController();
   final TextEditingController twitterController = TextEditingController();
   final TextEditingController linkedInController = TextEditingController();
+  final TextEditingController instaController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -36,7 +38,7 @@ class AddCardDetailsPage extends StatelessWidget {
         centerTitle: true,
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(left: 10.0,right: 10),
         child: Form(
           key: _formKey,
           child: SingleChildScrollView(
@@ -51,9 +53,10 @@ class AddCardDetailsPage extends StatelessWidget {
                 buildTextFormField('Email', emailController),
                 buildTextFormField('WhatsApp', whatsappController),
                 buildTextFormField('Facebook', facebookController),
-                buildTextFormField('Twitter', twitterController),
+                buildTextFormField('Instagram', instaController),
+                buildTextFormField('X', twitterController),
                 buildTextFormField('LinkedIn', linkedInController),
-                SizedBox(height: 20),
+                SizedBox(height: 10),
                 Align(
                   alignment: Alignment.center,
                   child: ElevatedButton(
@@ -98,6 +101,9 @@ class AddCardDetailsPage extends StatelessWidget {
 
 
                 ),
+
+                SizedBox(height: 20),
+
               ],
             ),
           ),
@@ -142,11 +148,13 @@ class AddCardDetailsPage extends StatelessWidget {
       email: emailController.text ?? "",
       whatsapp: whatsappController.text ?? "",
       facebook: facebookController.text ?? "",
+      instagram: instaController.text ?? "",
       twitter: twitterController.text ?? "",
       linkedin: linkedInController.text ?? "",
       createdDate: DateTime.now(),
       cardId: '',
       delete: false,
+      userId:globalUserId.toString()
     );
 
     // Reference to Firestore collection
@@ -190,6 +198,7 @@ class AddCardDetailsPage extends StatelessWidget {
                 whatsappController.clear();
                 twitterController.clear();
                 linkedInController.clear();
+                instaController.clear();
                 Navigator.pop(context);
               },
               child: Text('Submit',style: GoogleFonts.inter(color: primaryColor),),

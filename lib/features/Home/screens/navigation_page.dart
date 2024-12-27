@@ -339,6 +339,7 @@
 //   }
 // }
 import 'package:QCTT/features/Home/screens/recent_call_log_page.dart';
+import 'package:QCTT/main.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -392,6 +393,9 @@ class _NavigationBarPageState extends State<NavigationBarPage> {
 
   @override
   Widget build(BuildContext context) {
+    print(globalUserId);
+    print('globalUserId');
+    print('globalUserId');
 
     return Scaffold(
       backgroundColor: Colors.white,

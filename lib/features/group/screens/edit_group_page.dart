@@ -679,6 +679,7 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
                       color:hexColor??"",
                       image: downloadUrl??"",
                       membersCount:0,
+                      userId: globalUserId.toString()
                     );
                     if(addedMembers.isNotEmpty){
                       memberList = addedMembers.map((member) {
@@ -776,16 +777,48 @@ class _AddCardPageState extends ConsumerState<EditGroupPage> {
             child: Text("Cancel"),
           ),
           TextButton(
-            onPressed: () {
-              FirebaseFirestore.instance
-                  .collection('groups')
-                  .doc(groupId)
-                  .delete();
+            onPressed: () async {
+              try {
+                // Reference the group document
+                DocumentReference groupRef = FirebaseFirestore.instance.collection('groups').doc(groupId);
+
+                // Fetch the subcollections and delete their documents
+                WriteBatch batch = FirebaseFirestore.instance.batch();
+
+                // Deleting the 'members' subcollection documents
+                QuerySnapshot membersSnapshot = await groupRef.collection('members').get();
+                for (var memberDoc in membersSnapshot.docs) {
+                  batch.delete(memberDoc.reference);
+                }
+
+                // Add deletion of other subcollections as needed
+
+
+                // Finally delete the group document
+                batch.delete(groupRef);
+
+                // Commit the batch
+                await batch.commit();
+
+                // Provide feedback to the user
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Card deleted successfully!')),
+                );
+              } catch (e) {
+                // Handle errors gracefully
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text('Failed to delete group: $e')),
+                );
+              }
+              // FirebaseFirestore.instance
+              //     .collection('groups')
+              //     .doc(groupId)
+              //     .delete();
               // Perform delete action here
               Navigator.of(context).pop();
               Navigator.of(context).pop();
               // Add logic to delete the card
-              showUploadMessage(context, 'Card deleted successfully');
+              // showUploadMessage(context, 'Card deleted successfully');
             },
             child: Text("Delete", style: TextStyle(color: primaryColor)),
           ),

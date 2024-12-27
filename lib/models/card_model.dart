@@ -21,6 +21,8 @@ class CardModel {
   String twitter;
   String website;
   String whatsapp;
+  String instagram;
+  String userId;
 
   CardModel({
     required this.cardId,
@@ -35,6 +37,8 @@ class CardModel {
     required this.twitter,
     required this.website,
     required this.whatsapp,
+    required this.instagram,
+    required this.userId,
   });
 
   CardModel copyWith({
@@ -50,6 +54,8 @@ class CardModel {
     String? twitter,
     String? website,
     String? whatsapp,
+    String? instagram,
+    String? userId,
   }) =>
       CardModel(
         cardId: cardId ?? this.cardId,
@@ -64,6 +70,8 @@ class CardModel {
         twitter: twitter ?? this.twitter,
         website: website ?? this.website,
         whatsapp: whatsapp ?? this.whatsapp,
+        instagram: instagram ?? this.instagram,
+        userId: userId ?? this.userId,
       );
 
   factory CardModel.fromJson(Map<String, dynamic> json) => CardModel(
@@ -79,6 +87,8 @@ class CardModel {
     twitter: json["twitter"],
     website: json["website"],
     whatsapp: json["whatsapp"],
+    instagram: json["instagram"],
+    userId: json["userId"],
   );
 
   Map<String, dynamic> toJson() => {
@@ -94,5 +104,7 @@ class CardModel {
     "twitter": twitter,
     "website": website,
     "whatsapp": whatsapp,
+    "instagram": instagram,
+    "userId": userId,
   };
 }

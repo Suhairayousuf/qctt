@@ -1,3 +1,4 @@
+import 'package:QCTT/main.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -136,7 +137,7 @@ class GroupRepository{
 
 
   Stream<List<GroupModel>> getGroups() {
-    return  _firestore.collection(FirebaseConstants.groups)
+    return  _firestore.collection(FirebaseConstants.groups).where('userId',isEqualTo: globalUserId)
         .snapshots()
         .map((event) =>
         event.docs.map((e) => GroupModel.fromJson(e.data() )).toList());

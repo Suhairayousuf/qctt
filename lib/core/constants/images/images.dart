@@ -2,7 +2,7 @@ class ImageConstants{
   static String whatsapp="assets/images/whatsapp.png";
   static const callIcon ='assets/images/call_icon.png';
   static const fbIcon ='assets/images/fb.png';
-  static const globIcon ='assets/images/glob.jpg';
+  static const globIcon ='assets/images/world-wide-web.png';
   static const gmailIcon ='assets/images/gmail.png';
   static const instaIcon ='assets/images/social (1).png';
   static const linkedinIcon ='assets/images/social (2).png';

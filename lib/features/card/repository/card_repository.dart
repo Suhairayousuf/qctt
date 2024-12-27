@@ -7,6 +7,7 @@ import 'package:fpdart/fpdart.dart';
 import '../../../core/constants/firebase_constants.dart';
 import '../../../core/failure.dart';
 import '../../../core/providers/firebase_providers.dart';
+import '../../../main.dart';
 import '../../../models/card_model.dart';
 import '../../../models/member_model.dart';
 
@@ -60,7 +61,7 @@ class CardRepository{
 
 
   Stream<List<CardModel>> getCards() {
-    return  _firestore.collection(FirebaseConstants.cards)
+    return  _firestore.collection(FirebaseConstants.cards).where('userId',isEqualTo: globalUserId)
         .snapshots()
         .map((event) =>
         event.docs.map((e) => CardModel.fromJson(e.data() )).toList());

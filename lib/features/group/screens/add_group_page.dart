@@ -524,6 +524,7 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
                       color:hexColor??"",
                       image: downloadUrl??"",
                       membersCount:0,
+                      userId: globalUserId.toString()
                     );
                     if(addedMembers.isNotEmpty){
                       memberList = addedMembers.map((member) {
@@ -554,7 +555,7 @@ class _AddCardPageState extends ConsumerState<AddGroupPage> {
 
                     // admins1=[];
                     showUploadMessage(context,
-                      'Card added suceesfully',);
+                      'Card added succesfully',);
                     // Perform the delete action
                     // setState(() {
                     //   // items.removeAt(index); // Example: remove the item from the list

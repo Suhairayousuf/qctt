@@ -94,7 +94,11 @@ class _HomePageState extends ConsumerState<HomePage> {
                             itemCount: data.length, // Number of items in the grid
                             itemBuilder: (context, index) {
                               final group = data[index];
-
+                              if (group.groupId == null || group.groupId!.isEmpty) {
+                                return Center(
+                                  child: Text(""),
+                                );
+                              }
                               // Use StreamBuilder to dynamically get the count of documents
                               final memberListStream = FirebaseFirestore.instance
                                   .collection('groups')
@@ -156,11 +160,38 @@ class _HomePageState extends ConsumerState<HomePage> {
                                                   );
 
                                                   if (confirmed == true) {
-                                                    // Perform delete action
-                                                    FirebaseFirestore.instance
-                                                        .collection('groups')
-                                                        .doc(group.groupId)
-                                                        .delete();
+                                                    try {
+                                                      // Reference the group document
+                                                      DocumentReference groupRef = FirebaseFirestore.instance.collection('groups').doc(group.groupId);
+
+                                                      // Fetch the subcollections and delete their documents
+                                                      WriteBatch batch = FirebaseFirestore.instance.batch();
+
+                                                      // Deleting the 'members' subcollection documents
+                                                      QuerySnapshot membersSnapshot = await groupRef.collection('members').get();
+                                                      for (var memberDoc in membersSnapshot.docs) {
+                                                        batch.delete(memberDoc.reference);
+                                                      }
+
+                                                      // Add deletion of other subcollections as needed
+
+
+                                                      // Finally delete the group document
+                                                      batch.delete(groupRef);
+
+                                                      // Commit the batch
+                                                      await batch.commit();
+
+                                                      // Provide feedback to the user
+                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                        SnackBar(content: Text('Group deleted successfully!')),
+                                                      );
+                                                    } catch (e) {
+                                                      // Handle errors gracefully
+                                                      ScaffoldMessenger.of(context).showSnackBar(
+                                                        SnackBar(content: Text('Failed to delete group: $e')),
+                                                      );
+                                                    }
                                                   }
                                                 },
                                               ),
